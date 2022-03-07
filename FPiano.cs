@@ -288,18 +288,22 @@ namespace PianoGalon
                 case 74: return 62;
                 case 75: return 64;
                 case 76: return 65;
-                case 77: return 67; 
+                case 77: return 67;
                 default: return 0;
             }
         }
 
         private void Ke_KeyUp(object sender, KeyEventArgs e)
         {
-            Piano_KeyEvent(new TPianoEvent() { EventType = EChordEventType.Released, Number = GetPianoKey(e.KeyValue) });
+            TPianoEvent pe = new TPianoEvent() { EventType = EChordEventType.Released, Number = GetPianoKey(e.KeyValue) };
+            if (Piano.Keys[pe.Number] != null) Piano.Keys[pe.Number].Velocity = 0;
+            Piano_KeyEvent(pe);
         }
         private void Ke_KeyDown(object sender, KeyEventArgs e)
         {
-            Piano_KeyEvent(new TPianoEvent() { EventType = EChordEventType.Pressed, Number = GetPianoKey(e.KeyValue) });
+            TPianoEvent pe = new TPianoEvent() { EventType = EChordEventType.Pressed, Number = GetPianoKey(e.KeyValue) };
+            if (Piano.Keys[pe.Number] != null) Piano.Keys[pe.Number].Velocity = 80;
+            Piano_KeyEvent(pe);
         }
 
 
