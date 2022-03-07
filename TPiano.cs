@@ -4,7 +4,7 @@ using MidiGalon.MidiInput;
 using System;
 using System.Drawing;
 using System.Linq;
-using System.Threading; 
+using System.Threading;
 
 namespace PianoGalon
 {
@@ -13,7 +13,7 @@ namespace PianoGalon
         //InputDevice device;
         WinMMMidiInput input;
 
-        
+
 
         public TPiano()
         {
@@ -37,7 +37,7 @@ namespace PianoGalon
                 input.MessageReceived += Input_MessageReceived;
             }
 
-          //  Thread th = new Thread(InitThreaded); th.Start();
+            //  Thread th = new Thread(InitThreaded); th.Start();
 
         }
 
@@ -64,7 +64,7 @@ namespace PianoGalon
 
         public void Dispose()
         {
-            input.Dispose();
+            input?.Dispose();
         }
 
         public delegate void NoteEventCallBack(int note, int velocity);
