@@ -1,4 +1,4 @@
-﻿using Melanchall.DryWetMidi.Multimedia;
+﻿using MidiGalon;
 using System;
 using System.Collections.Generic;
 using System.Drawing;
@@ -17,7 +17,7 @@ namespace PianoGalon
         public FPiano()
         {
             InitializeComponent();
-            ICollection<InputDevice> lst = Melanchall.DryWetMidi.Multimedia.InputDevice.GetAll();
+            ICollection<InputDevice> lst = InputDevice.GetAll();
             if (lst.Count == 0)
                 Piano = new TPiano(null);
             else
@@ -225,7 +225,6 @@ namespace PianoGalon
         private void DoerDrawResults()
         {
             Action refresher = new Action(pbResults.Refresh);
-            Bitmap bmp;
             Graphics grp;
             TChordTarget[] cts = { };
             TPlayerEvent[] evts = { };

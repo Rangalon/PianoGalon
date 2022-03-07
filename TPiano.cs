@@ -1,5 +1,5 @@
-﻿using Melanchall.DryWetMidi.Core;
-using Melanchall.DryWetMidi.Multimedia;
+﻿
+using MidiGalon;
 using System;
 using System.Collections.Generic;
 using System.Drawing;

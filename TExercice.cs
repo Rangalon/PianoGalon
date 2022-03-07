@@ -163,8 +163,8 @@ namespace PianoGalon
                 foreach (TMidiChannel mchn in mtrk.Channels.Where(o => o != null))
                     while (mchn.Events.Count > 0)
                     {
-                        TMidiEvent e1 = mchn.Events[0]; mchn.Events.RemoveAt(0);
-                        TMidiEvent e2 = mchn.Events.First(o => o.Note == e1.Note); mchn.Events.Remove(e2);
+                        TMidiNoteEvent e1 = mchn.Events[0]; mchn.Events.RemoveAt(0);
+                        TMidiNoteEvent e2 = mchn.Events.First(o => o.Note == e1.Note); mchn.Events.Remove(e2);
                         chds.Add(new TChord() { Duration = 0.001f * (e2.Date - e1.Date), Start = 0.001f * e1.Date, Notes = new int[] { e1.Note } });
                     }
             Chords = chds.ToArray();
