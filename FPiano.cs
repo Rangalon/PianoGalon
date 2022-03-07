@@ -25,23 +25,34 @@ namespace PianoGalon
             Piano.KeyEvent += Piano_KeyEvent;
         }
 
+        float CurrentDate = 0;
+
         private void Piano_KeyEvent(TPianoEvent e)
         {
-            if (CurrentTarget != null)
+            switch (PlayMode)
             {
-                TChordTarget ct = ChordTargets.FirstOrDefault(o => o.Number == e.Number && o.EventType == e.EventType && o.Date >= CurrentTarget.Date && o.Date - CurrentTarget.Date < 0.1f);
+                case EPlayMode.Stairs:
+                    {
+                        TChordTarget ct = ChordTargets.FirstOrDefault(o => o.Number == e.Number && o.EventType == e.EventType && o.Date >= CurrentDate && o.Date - CurrentDate < 0.1f);
 
-                if (ct != null)
-                {
-                    ct.Done = true;
-                    CurrentTarget = ChordTargets.FirstOrDefault(o => !o.Done);
-                    //
-                    if (ct.EventType == EChordEventType.Pressed) NotesQty--;
-                    GoodEvents++;
-                }
-                else
-                    BadEvents++;
+                        if (ct != null)
+                        {
+                            ct.Done = true;
+                            //
+                            if (ct.EventType == EChordEventType.Pressed) NotesQty--;
+                            ct = ChordTargets.FirstOrDefault(o => !o.Done);
+                            if (ct != null) CurrentDate = ct.Date;
+                            GoodEvents++;
+                        }
+                        else
+                            BadEvents++;
+                    }
+                    break;
+                case EPlayMode.Escalators:
+
+                    break;
             }
+
         }
 
 
@@ -137,18 +148,17 @@ namespace PianoGalon
                             grp.DrawLine(BackPen, key.MinX, 0, key.MinX, sz.Height);
                             grp.DrawLine(BackPen, key.MaxX, 0, key.MaxX, sz.Height);
                         }
-                        if (CurrentTarget != null)
-                        {
-                            grp.TranslateTransform(0, -CurrentTarget.Date * TChord.DurationRatio);
-                            foreach (GraphicsPath path in WhitePaths)
-                                grp.FillPath(Brushes.White, path);
-                            foreach (GraphicsPath path in BlackPaths)
-                                grp.FillPath(Brushes.Black, path);
-                            foreach (TChordTarget ct in ChordTargets.Where(o => o.EventType == EChordEventType.Pressed))
-                                grp.FillEllipse(Brushes.DarkBlue, ct.Rec);
-                            foreach (TChordTarget ct in ChordTargets.Where(o => o.EventType == EChordEventType.Released))
-                                grp.FillEllipse(Brushes.DarkGoldenrod, ct.Rec);
-                        }
+
+                        grp.TranslateTransform(0, -CurrentDate * TChord.DurationRatio);
+                        foreach (GraphicsPath path in WhitePaths)
+                            grp.FillPath(Brushes.White, path);
+                        foreach (GraphicsPath path in BlackPaths)
+                            grp.FillPath(Brushes.Black, path);
+                        foreach (TChordTarget ct in ChordTargets.Where(o => o.EventType == EChordEventType.Pressed))
+                            grp.FillEllipse(Brushes.DarkBlue, ct.Rec);
+                        foreach (TChordTarget ct in ChordTargets.Where(o => o.EventType == EChordEventType.Released))
+                            grp.FillEllipse(Brushes.DarkGoldenrod, ct.Rec);
+
                     }
                     //
                     if (keButton.Exercice != null && kpButton.Profil != null)
@@ -212,7 +222,14 @@ namespace PianoGalon
                     }
                 }
                 if (pbPiano.BackgroundImage == null)
+                {
                     pbPiano.BackgroundImage = new Bitmap(pbPiano.Width, pbPiano.Height);
+                    PressedShadowBrush = new LinearGradientBrush(
+                        new Rectangle(0, 0, pbPiano.Width, 800),
+                        Color.FromArgb(0, 0, 0, 0),
+                        Color.FromArgb(128, 0, 0, 0),
+                        90f);
+                }
 
                 try
                 {
@@ -227,18 +244,39 @@ namespace PianoGalon
                     InitGrp(grp, xratio, xratio);
                     foreach (TPiano.TKey key in Piano.Keys.Where(o => o != null && o.Pnts != null && !o.Black))
                     {
-                        grp.FillPath(Brushes.White, key.Path);
                         if (key.Velocity > 0)
+                        {
+                            grp.ScaleTransform(1, 0.95f);
+                            grp.FillPath(Brushes.White, key.Path);
+                            grp.DrawPath(WhiteBorderPen, key.Path);
                             grp.FillPath(PressedBrs, key.Path);
-                        grp.DrawPath(WhiteBorderPen, key.Path);
+                            grp.FillPath(PressedShadowBrush, key.Path);
+                            grp.ScaleTransform(1, 1 / 0.95f);
+                        }
+                        else
+                        {
+                            grp.FillPath(Brushes.White, key.Path);
+                            grp.DrawPath(WhiteBorderPen, key.Path);
+                        }                      
                         grp.DrawString(key.Name, KLabel.Ft, Brushes.Black, key.MinX, 50);
+
                     }
                     foreach (TPiano.TKey key in Piano.Keys.Where(o => o != null && o.Pnts != null && o.Black))
                     {
-                        grp.FillPath(Brushes.Black, key.Path);
                         if (key.Velocity > 0)
+                        {
+                            grp.ScaleTransform(1, 0.95f);
+                            grp.FillPath(Brushes.Black, key.Path);
+                            grp.DrawPath(WhiteBorderPen, key.Path);
                             grp.FillPath(PressedBrs, key.Path);
-                        grp.DrawPath(BlackBorderPen, key.Path);
+                            grp.FillPath(PressedShadowBrush, key.Path);
+                            grp.ScaleTransform(1, 1 / 0.95f);
+                        }
+                        else
+                        {
+                            grp.FillPath(Brushes.Black, key.Path);
+                            grp.DrawPath(WhiteBorderPen, key.Path);
+                        } 
                     }
                     grp.Dispose();
                 }
@@ -251,6 +289,8 @@ namespace PianoGalon
                 Thread.Sleep(10);
             }
         }
+
+        static Brush PressedShadowBrush;
 
         float xratio = 1;
 
@@ -285,6 +325,7 @@ namespace PianoGalon
             switch (keyValue)
             {
                 case 72: return 60;
+                case 85: return 61;
                 case 74: return 62;
                 case 75: return 64;
                 case 76: return 65;
@@ -314,10 +355,15 @@ namespace PianoGalon
 
         void ResetExercice()
         {
-            if (ChordTargets.Length > 0)
-                CurrentTarget = ChordTargets[0];
-            else
-                CurrentTarget = null;
+            switch (PlayMode)
+            {
+                case EPlayMode.Stairs:
+                    CurrentDate = 0;
+                    break;
+                case EPlayMode.Escalators:
+                    CurrentDate = -5;
+                    break;
+            }
             //
             NotesQty = ChordTargets.Count(o => o.EventType == EChordEventType.Pressed);
             BadEvents = 0;
@@ -342,7 +388,6 @@ namespace PianoGalon
         }
 
 
-        TChordTarget CurrentTarget;
 
         GraphicsPath[] WhitePaths = { };
         GraphicsPath[] BlackPaths = { };
@@ -458,6 +503,7 @@ namespace PianoGalon
             if (RecPlayMode.Contains(e.X, e.Y))
             {
                 PlayMode = Pms[(Array.IndexOf(Pms, PlayMode) + 1) % Pms.Length];
+                ResetExercice();
             }
             else if (RecPlay.Contains(e.X, e.Y))
                 ResetExercice();
