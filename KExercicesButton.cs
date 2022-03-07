@@ -24,33 +24,30 @@ namespace PianoGalon
             set
             {
                 exercices = value;
-                if (value != null)
-                {
-                    Random rnd = new Random((int)-exercices.Id);
-                    int i = (int)(AllColors.Length * rnd.NextDouble());
-                    int j = (int)(i + AllColors.Length * 0.5) % AllColors.Length;
-                    Color c1 = AllColors[i];
-                    Color c2 = AllColors[j];
-                    BckBrush = new LinearGradientBrush(new Rectangle(0, 0, OverallSize.Width, OverallSize.Height), c1, c2, 45, true);
-                }
+                if (value != null) BckBrush = GetBrs(Size, exercices.Id);
             }
         }
 
         protected override void OnPaint(PaintEventArgs pevent)
         {
             base.OnPaint(pevent);
+
+
+            pevent.Graphics.FillPath(BckBrush, Path);
+            pevent.Graphics.DrawPath(BorderPen, Path);
+
             pevent.Graphics.TranslateTransform(1, 1);
             if (exercices != null)
             {
                 pevent.Graphics.DrawString(Exercices.Name, Ft, Brushes.Black, pevent.ClipRectangle, StrCC);
                 pevent.Graphics.TranslateTransform(-1, -1);
-                pevent.Graphics.DrawString(Exercices.Name, Ft, CurrentBrs, pevent.ClipRectangle, StrCC);
+                pevent.Graphics.DrawString(Exercices.Name, Ft, Brushes.LightGray, pevent.ClipRectangle, StrCC);
             }
             else
             {
                 pevent.Graphics.DrawString("Select the Exercices", Ft, Brushes.Black, pevent.ClipRectangle, StrCC);
                 pevent.Graphics.TranslateTransform(-1, -1);
-                pevent.Graphics.DrawString("Select the Exercices", Ft, CurrentBrs, pevent.ClipRectangle, StrCC);
+                pevent.Graphics.DrawString("Select the Exercices", Ft, Brushes.LightGray, pevent.ClipRectangle, StrCC);
             }
         }
 

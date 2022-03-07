@@ -33,6 +33,8 @@ namespace PianoGalon
             // 
             // KButton
             // 
+            this.MouseEnter += new System.EventHandler(this.KButton_MouseEnter);
+            this.MouseLeave += new System.EventHandler(this.KButton_MouseLeave);
             this.Resize += new System.EventHandler(this.KButton_Resize);
             this.ResumeLayout(false);
 

@@ -16,6 +16,13 @@ namespace PianoGalon
         protected override void OnPaint(PaintEventArgs pevent)
         {
             base.OnPaint(pevent);
+
+            if (HasMouse)
+            {
+                pevent.Graphics.FillPath(LightPen.Brush, Path);
+                pevent.Graphics.DrawPath(BorderPen, Path);
+            }
+
             if (ImagePath != null)
             {
                 pevent.Graphics.FillPath(ImageBrush, ImagePath);
@@ -23,8 +30,8 @@ namespace PianoGalon
             }
         }
 
-        static Color C1 = Color.FromArgb(224, 224, 224);
-        static Color C2 = Color.FromArgb(224, 224, 128);
+        static Color C1 = Color.FromArgb(160, 160, 80);
+        static Color C2 = Color.FromArgb(80, 160, 160);
 
         Brush ImageBrush;
 

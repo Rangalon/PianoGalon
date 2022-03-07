@@ -17,7 +17,7 @@ namespace PianoGalon
 
         public static readonly Font Ft = new Font("Verdana", 14, FontStyle.Bold);
 
-        
+
         protected GraphicsPath Path;
 
         static KButton()
@@ -47,6 +47,21 @@ namespace PianoGalon
         }
 
 
+        static double BrsCoef = 0.4;
+        static double BrsCst = 0;
+
+        protected static Brush GetBrs(Size sz, uint n)
+        {
+            Random rnd = new Random((int)-n);
+            int i = (int)(AllColors.Length * rnd.NextDouble());
+            int j = (int)(i + AllColors.Length * 0.5) % AllColors.Length;
+            Color c1 = AllColors[i];
+            Color c2 = AllColors[j];
+            c1 = Color.FromArgb((byte)(BrsCst + BrsCoef * c1.R), (byte)(BrsCst + BrsCoef * c1.G), (byte)(BrsCst + BrsCoef * c1.B));
+            c2 = Color.FromArgb((byte)(BrsCst + BrsCoef * c2.R), (byte)(BrsCst + BrsCoef * c2.G), (byte)(BrsCst + BrsCoef * c2.B));
+            return new LinearGradientBrush(new Rectangle(0, 0, sz.Width, sz.Height), c1, c2, 45, true);
+        }
+
         protected override void OnPaint(PaintEventArgs pevent)
         {
             if (Parent is KFlowLayoutPanel)
@@ -61,11 +76,13 @@ namespace PianoGalon
 
             pevent.Graphics.SmoothingMode = SmoothingMode.AntiAlias;
             pevent.Graphics.TextRenderingHint = System.Drawing.Text.TextRenderingHint.AntiAlias;
-            pevent.Graphics.FillPath(BckBrush, Path);
-            pevent.Graphics.DrawPath(BorderPen, Path);
+                       
         }
 
+
+
         public static Pen BorderPen = new Pen(Color.FromArgb(64, 0, 0, 0), 4);
+        public static Pen LightPen = new Pen(Color.FromArgb(64, 255, 255, 255), 4);
         static protected Brush CurrentBrs = new SolidBrush(Color.FromArgb(255, 224, 224, 0));
 
 
@@ -84,6 +101,18 @@ namespace PianoGalon
         private void KButton_Resize(object sender, EventArgs e)
         {
             UpdateCurrentPath();
+        }
+
+        protected bool HasMouse = false;
+
+        private void KButton_MouseLeave(object sender, EventArgs e)
+        {
+            HasMouse = false;
+        }
+
+        private void KButton_MouseEnter(object sender, EventArgs e)
+        {
+            HasMouse = true;
         }
     }
 }

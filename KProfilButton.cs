@@ -10,18 +10,23 @@ namespace PianoGalon
         protected override void OnPaint(PaintEventArgs pevent)
         {
             base.OnPaint(pevent);
+
+
+            pevent.Graphics.FillPath(BckBrush, Path);
+            pevent.Graphics.DrawPath(BorderPen, Path);
+
             pevent.Graphics.TranslateTransform(1, 1);
             if (Profil != null)
             {
                 pevent.Graphics.DrawString(Profil.Name, Ft, Brushes.Black, pevent.ClipRectangle, StrCC);
                 pevent.Graphics.TranslateTransform(-1, -1);
-                pevent.Graphics.DrawString(Profil.Name, Ft, CurrentBrs, pevent.ClipRectangle, StrCC);
+                pevent.Graphics.DrawString(Profil.Name, Ft, Brushes.LightGray, pevent.ClipRectangle, StrCC);
             }
             else
             {
                 pevent.Graphics.DrawString("Select your Account", Ft, Brushes.Black, pevent.ClipRectangle, StrCC);
                 pevent.Graphics.TranslateTransform(-1, -1);
-                pevent.Graphics.DrawString("Select your Account", Ft, CurrentBrs, pevent.ClipRectangle, StrCC);
+                pevent.Graphics.DrawString("Select your Account", Ft, Brushes.LightGray, pevent.ClipRectangle, StrCC);
             }
         }
 

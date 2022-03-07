@@ -21,15 +21,7 @@ namespace PianoGalon
             set
             {
                 exercice = value;
-                if (value != null)
-                {
-                    Random rnd = new Random((int)-exercice.Id);
-                    int i = (int)(AllColors.Length * rnd.NextDouble());
-                    int j = (int)(i + AllColors.Length * 0.5) % AllColors.Length;
-                    Color c1 = AllColors[i];
-                    Color c2 = AllColors[j];
-                    BckBrush = new LinearGradientBrush(new Rectangle(0, 0, OverallSize.Width, OverallSize.Height), c1, c2, 45, true);
-                }
+                if (value != null) BckBrush = GetBrs(Size, exercice.Id);
             }
         }
 
@@ -37,20 +29,26 @@ namespace PianoGalon
         protected override void OnPaint(PaintEventArgs pevent)
         {
             base.OnPaint(pevent);
+
+
+            pevent.Graphics.FillPath(BckBrush, Path);
+            pevent.Graphics.DrawPath(BorderPen, Path);
+
             pevent.Graphics.TranslateTransform(1, 1);
 
             if (exercice != null)
             {
                 pevent.Graphics.DrawString(exercice.Name, Ft, Brushes.Black, TextRectangle, StrCC);
                 pevent.Graphics.TranslateTransform(-1, -1);
-                pevent.Graphics.DrawString(exercice.Name, Ft, CurrentBrs, TextRectangle, StrCC);
+                pevent.Graphics.DrawString(exercice.Name, Ft, Brushes.LightGray, TextRectangle, StrCC);
             }
             else
             {
                 pevent.Graphics.DrawString("Select an Exercice", Ft, Brushes.Black, TextRectangle, StrCC);
                 pevent.Graphics.TranslateTransform(-1, -1);
-                pevent.Graphics.DrawString("Select an Exercice", Ft, CurrentBrs, TextRectangle, StrCC);
+                pevent.Graphics.DrawString("Select an Exercice", Ft, Brushes.LightGray, TextRectangle, StrCC);
             }
+            if (HasMouse) pevent.Graphics.FillPath(BorderPen.Brush, Path);
         }
 
         public KExerciceButton()
@@ -70,7 +68,7 @@ namespace PianoGalon
             Path.AddArc(new RectangleF(2, 2, diameter, diameter), 180, 90);
         }
 
-        Rectangle TextRectangle = new Rectangle(0, 0, OverallSize.Width , OverallSize.Height);
+        Rectangle TextRectangle = new Rectangle(0, 0, OverallSize.Width, OverallSize.Height);
 
     }
 }

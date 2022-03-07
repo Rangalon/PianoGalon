@@ -285,8 +285,10 @@ namespace PianoGalon
             switch (keyValue)
             {
                 case 72: return 60;
+                case 74: return 62;
                 case 75: return 64;
-                case 77: return 67;
+                case 76: return 65;
+                case 77: return 67; 
                 default: return 0;
             }
         }
@@ -345,12 +347,13 @@ namespace PianoGalon
 
         private void importToolStripMenuItem_Click(object sender, EventArgs e)
         {
-            if (keButton.Exercice == null) SetNewCurrentExercice();
-            OpenFileDialog ofd = new OpenFileDialog() { Filter = "Muse Score|*.mscx" };
+            OpenFileDialog ofd = new OpenFileDialog() { Filter = "Muse Score|*.mscx", Multiselect = true };
             ofd.ShowDialog();
-            if (ofd.FileName != "")
-                keButton.Exercice.ImportMuse(ofd.FileName);
-
+            foreach (string file in ofd.FileNames)
+            {
+                SetNewCurrentExercice();
+                keButton.Exercice.ImportMuse(file);
+            }
         }
 
         void SetNewCurrentExercice()
@@ -358,6 +361,7 @@ namespace PianoGalon
             TExercice ex = new TExercice();
             //
             kesButton.Exercices.Exercices.Add(ex);
+            ex.Rank = (uint)kesButton.Exercices.Exercices.Count;
             // 
             keButton.Exercice = ex;
             // 

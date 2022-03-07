@@ -286,6 +286,7 @@ namespace PianoGalon
             // 
             // keButton
             // 
+            this.keButton.ContextMenuStrip = this.cmsExercice;
             this.keButton.Exercice = null;
             this.keButton.Location = new System.Drawing.Point(1074, 1);
             this.keButton.Margin = new System.Windows.Forms.Padding(1);
@@ -301,6 +302,7 @@ namespace PianoGalon
             // kesButton
             // 
             this.kesButton.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Right)));
+            this.kesButton.ContextMenuStrip = this.cmsExercices;
             this.kesButton.Exercices = null;
             this.kesButton.Location = new System.Drawing.Point(501, 1);
             this.kesButton.Margin = new System.Windows.Forms.Padding(1);
