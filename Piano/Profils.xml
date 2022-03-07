@@ -1,6 +1,0 @@
-<?xml version="1.0" encoding="utf-8"?>
-<ArrayOfTProfil xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xmlns:xsd="http://www.w3.org/2001/XMLSchema">
-  <TProfil Name="Romain" R="0" G="64" B="192" />
-  <TProfil Name="Hugo" R="0" G="192" B="0" />
-  <TProfil Name="Cécile" R="218" G="112" B="214" />
-</ArrayOfTProfil>
