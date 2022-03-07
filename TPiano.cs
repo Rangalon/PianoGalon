@@ -9,24 +9,24 @@ using static MidiGalon.MidiInput.WinMM;
 
 namespace PianoGalon
 {
-    public class TPiano
+    public class TPiano : IDisposable
     {
         //InputDevice device;
-
+        WinMMMidiInput input;
 
         void InitThreaded()
         {
             WinMMMidiAccess ima = (WinMMMidiAccess)MidiAccessManager.Default;
             WinMMPortDetails mpd = (WinMMPortDetails)ima.Inputs.First();
 
-          //  Thread.Sleep(1000);
+            //  Thread.Sleep(1000);
 
-            WinMMMidiInput input = (WinMMMidiInput)ima.OpenInputAsync(mpd.Id).Result;
+            input = (WinMMMidiInput)ima.OpenInputAsync(mpd.Id).Result;
 
-        //    Thread.Sleep(1000);
+            //    Thread.Sleep(1000);
             input.MessageReceived += Input_MessageReceived;
 
-       //     Thread.Sleep(6000);
+            //     Thread.Sleep(6000);
         }
 
 
@@ -61,6 +61,11 @@ namespace PianoGalon
                 foreach (byte b in e.Data) s += b.ToString() + " ";
                 Console.WriteLine(string.Format("{0} {1} {2}", s, e.Length, e.Timestamp));
             }
+        }
+
+        public void Dispose()
+        {
+            input.Dispose();
         }
 
         public delegate void NoteEventCallBack(int note, int velocity);

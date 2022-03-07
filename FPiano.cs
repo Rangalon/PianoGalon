@@ -74,8 +74,14 @@ namespace PianoGalon
                     }
                     break;
             }
-
+            if (ChordTargets.Length > 0)
+                Score = 100 * (float)GoodEvents / (float)(ChordTargets.Length + BadEvents);
+            else
+                Score = 0;
         }
+
+        float Score;
+
 
         static double TimeTolerance = 0.2;
 
@@ -206,9 +212,8 @@ namespace PianoGalon
                         grp.TranslateTransform(1, 1); grp.DrawString(s, KButton.Ft, Brushes.Black, RecNotes, KButton.StrCC);
                         grp.TranslateTransform(-1, -1); grp.DrawString(s, KButton.Ft, Brushes.LightGray, RecNotes, KButton.StrCC);
                         //
-                        int r = GoodEvents + BadEvents;
-                        if (r > 0) r = (100 * GoodEvents) / r;
-                        s = string.Format("Good: {0}\nBad : {1}\nScore: {2}%", GoodEvents, BadEvents, r);
+
+                        s = string.Format("Good: {0}\nBad : {1}\nScore: {2:0}%", GoodEvents, BadEvents, Score);
                         grp.TranslateTransform(1, 1); grp.DrawString(s, KButton.Ft, Brushes.Black, RecScore, KButton.StrCC);
                         grp.TranslateTransform(-1, -1); grp.DrawString(s, KButton.Ft, Brushes.LightGray, RecScore, KButton.StrCC);
                     }
@@ -405,6 +410,8 @@ namespace PianoGalon
 
         private void Form1_FormClosing(object sender, FormClosingEventArgs e)
         {
+            Hide();
+            Piano.Dispose();
             DoerDrawEnabled = false;
         }
 
