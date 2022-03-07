@@ -135,7 +135,6 @@ namespace PianoGalon
                         }
                         if (CurrentTarget != null)
                         {
-
                             grp.TranslateTransform(0, -CurrentTarget.Date * TChord.DurationRatio);
                             foreach (GraphicsPath path in WhitePaths)
                                 grp.FillPath(Brushes.White, path);
@@ -146,7 +145,6 @@ namespace PianoGalon
                             foreach (TChordTarget ct in ChordTargets.Where(o => o.EventType == EChordEventType.Released))
                                 grp.FillEllipse(Brushes.DarkGoldenrod, ct.Rec);
                         }
-
                     }
                     //
                     if (CurrentExercice != null && CurrentProfil != null)
