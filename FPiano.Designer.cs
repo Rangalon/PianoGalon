@@ -34,6 +34,7 @@ namespace PianoGalon
             this.cmsExercice = new System.Windows.Forms.ContextMenuStrip(this.components);
             this.importToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
             this.importMidiToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
+            this.newToolStripMenuItem2 = new System.Windows.Forms.ToolStripMenuItem();
             this.pbMusicScore = new System.Windows.Forms.PictureBox();
             this.pbPiano = new System.Windows.Forms.PictureBox();
             this.cmsProfils = new System.Windows.Forms.ContextMenuStrip(this.components);
@@ -41,9 +42,9 @@ namespace PianoGalon
             this.editToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
             this.cmsExercices = new System.Windows.Forms.ContextMenuStrip(this.components);
             this.saveToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
-            this.tmrSave = new System.Windows.Forms.Timer(this.components);
             this.newToolStripMenuItem1 = new System.Windows.Forms.ToolStripMenuItem();
-            this.newToolStripMenuItem2 = new System.Windows.Forms.ToolStripMenuItem();
+            this.tmrSave = new System.Windows.Forms.Timer(this.components);
+            this.editToolStripMenuItem1 = new System.Windows.Forms.ToolStripMenuItem();
             this.btnClose = new PianoGalon.KPathButton();
             this.flpExercice = new PianoGalon.KFlowLayoutPanel();
             this.flpProfils = new PianoGalon.KFlowLayoutPanel();
@@ -90,26 +91,35 @@ namespace PianoGalon
             // 
             // cmsExercice
             // 
+            this.cmsExercice.Font = new System.Drawing.Font("Verdana", 14.25F, System.Drawing.FontStyle.Bold, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
             this.cmsExercice.Items.AddRange(new System.Windows.Forms.ToolStripItem[] {
             this.importToolStripMenuItem,
             this.importMidiToolStripMenuItem,
-            this.newToolStripMenuItem2});
+            this.newToolStripMenuItem2,
+            this.editToolStripMenuItem1});
             this.cmsExercice.Name = "cmsExercice";
-            this.cmsExercice.Size = new System.Drawing.Size(145, 70);
+            this.cmsExercice.Size = new System.Drawing.Size(222, 138);
             // 
             // importToolStripMenuItem
             // 
             this.importToolStripMenuItem.Name = "importToolStripMenuItem";
-            this.importToolStripMenuItem.Size = new System.Drawing.Size(144, 22);
+            this.importToolStripMenuItem.Size = new System.Drawing.Size(221, 28);
             this.importToolStripMenuItem.Text = "Import  Mscx";
             this.importToolStripMenuItem.Click += new System.EventHandler(this.importToolStripMenuItem_Click);
             // 
             // importMidiToolStripMenuItem
             // 
             this.importMidiToolStripMenuItem.Name = "importMidiToolStripMenuItem";
-            this.importMidiToolStripMenuItem.Size = new System.Drawing.Size(144, 22);
+            this.importMidiToolStripMenuItem.Size = new System.Drawing.Size(221, 28);
             this.importMidiToolStripMenuItem.Text = "Import Midi";
             this.importMidiToolStripMenuItem.Click += new System.EventHandler(this.importMidiToolStripMenuItem_Click);
+            // 
+            // newToolStripMenuItem2
+            // 
+            this.newToolStripMenuItem2.Name = "newToolStripMenuItem2";
+            this.newToolStripMenuItem2.Size = new System.Drawing.Size(221, 28);
+            this.newToolStripMenuItem2.Text = "New";
+            this.newToolStripMenuItem2.Click += new System.EventHandler(this.newToolStripMenuItem2_Click);
             // 
             // pbMusicScore
             // 
@@ -138,40 +148,49 @@ namespace PianoGalon
             // 
             // cmsProfils
             // 
+            this.cmsProfils.Font = new System.Drawing.Font("Verdana", 14.25F, System.Drawing.FontStyle.Bold, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
             this.cmsProfils.Items.AddRange(new System.Windows.Forms.ToolStripItem[] {
             this.newToolStripMenuItem,
             this.editToolStripMenuItem});
             this.cmsProfils.Name = "cmsProfils";
-            this.cmsProfils.Size = new System.Drawing.Size(130, 48);
+            this.cmsProfils.Size = new System.Drawing.Size(194, 60);
             // 
             // newToolStripMenuItem
             // 
             this.newToolStripMenuItem.Name = "newToolStripMenuItem";
-            this.newToolStripMenuItem.Size = new System.Drawing.Size(129, 22);
+            this.newToolStripMenuItem.Size = new System.Drawing.Size(193, 28);
             this.newToolStripMenuItem.Text = "New Profil";
             this.newToolStripMenuItem.Click += new System.EventHandler(this.newToolStripMenuItem_Click);
             // 
             // editToolStripMenuItem
             // 
             this.editToolStripMenuItem.Name = "editToolStripMenuItem";
-            this.editToolStripMenuItem.Size = new System.Drawing.Size(129, 22);
+            this.editToolStripMenuItem.Size = new System.Drawing.Size(193, 28);
             this.editToolStripMenuItem.Text = "Edit";
             this.editToolStripMenuItem.Click += new System.EventHandler(this.editToolStripMenuItem_Click);
             // 
             // cmsExercices
             // 
+            this.cmsExercices.Font = new System.Drawing.Font("Verdana", 14.25F, System.Drawing.FontStyle.Bold, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
             this.cmsExercices.Items.AddRange(new System.Windows.Forms.ToolStripItem[] {
             this.saveToolStripMenuItem,
             this.newToolStripMenuItem1});
             this.cmsExercices.Name = "cmsExercices";
-            this.cmsExercices.Size = new System.Drawing.Size(99, 48);
+            this.cmsExercices.Size = new System.Drawing.Size(133, 60);
             // 
             // saveToolStripMenuItem
             // 
             this.saveToolStripMenuItem.Name = "saveToolStripMenuItem";
-            this.saveToolStripMenuItem.Size = new System.Drawing.Size(98, 22);
+            this.saveToolStripMenuItem.Size = new System.Drawing.Size(132, 28);
             this.saveToolStripMenuItem.Text = "Save";
             this.saveToolStripMenuItem.Click += new System.EventHandler(this.saveToolStripMenuItem_Click);
+            // 
+            // newToolStripMenuItem1
+            // 
+            this.newToolStripMenuItem1.Name = "newToolStripMenuItem1";
+            this.newToolStripMenuItem1.Size = new System.Drawing.Size(132, 28);
+            this.newToolStripMenuItem1.Text = "New";
+            this.newToolStripMenuItem1.Click += new System.EventHandler(this.newToolStripMenuItem1_Click);
             // 
             // tmrSave
             // 
@@ -179,19 +198,12 @@ namespace PianoGalon
             this.tmrSave.Interval = 10000;
             this.tmrSave.Tick += new System.EventHandler(this.tmrSave_Tick);
             // 
-            // newToolStripMenuItem1
+            // editToolStripMenuItem1
             // 
-            this.newToolStripMenuItem1.Name = "newToolStripMenuItem1";
-            this.newToolStripMenuItem1.Size = new System.Drawing.Size(98, 22);
-            this.newToolStripMenuItem1.Text = "New";
-            this.newToolStripMenuItem1.Click += new System.EventHandler(this.newToolStripMenuItem1_Click);
-            // 
-            // newToolStripMenuItem2
-            // 
-            this.newToolStripMenuItem2.Name = "newToolStripMenuItem2";
-            this.newToolStripMenuItem2.Size = new System.Drawing.Size(144, 22);
-            this.newToolStripMenuItem2.Text = "New";
-            this.newToolStripMenuItem2.Click += new System.EventHandler(this.newToolStripMenuItem2_Click);
+            this.editToolStripMenuItem1.Name = "editToolStripMenuItem1";
+            this.editToolStripMenuItem1.Size = new System.Drawing.Size(221, 28);
+            this.editToolStripMenuItem1.Text = "Edit";
+            this.editToolStripMenuItem1.Click += new System.EventHandler(this.editToolStripMenuItem1_Click);
             // 
             // btnClose
             // 
@@ -307,6 +319,7 @@ namespace PianoGalon
         private KPathButton btnMinimize;
         private System.Windows.Forms.ToolStripMenuItem newToolStripMenuItem1;
         private System.Windows.Forms.ToolStripMenuItem newToolStripMenuItem2;
+        private System.Windows.Forms.ToolStripMenuItem editToolStripMenuItem1;
     }
 }
 

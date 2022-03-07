@@ -54,11 +54,11 @@
     <Compile Include="FPiano.Designer.cs">
       <DependentUpon>FPiano.cs</DependentUpon>
     </Compile>
-    <Compile Include="FProfil.cs">
+    <Compile Include="FEdit.cs">
       <SubType>Form</SubType>
     </Compile>
-    <Compile Include="FProfil.Designer.cs">
-      <DependentUpon>FProfil.cs</DependentUpon>
+    <Compile Include="FEdit.Designer.cs">
+      <DependentUpon>FEdit.cs</DependentUpon>
     </Compile>
     <Compile Include="IButtonnable.cs" />
     <Compile Include="KButton.cs">
@@ -114,8 +114,8 @@
     <EmbeddedResource Include="FPiano.resx">
       <DependentUpon>FPiano.cs</DependentUpon>
     </EmbeddedResource>
-    <EmbeddedResource Include="FProfil.resx">
-      <DependentUpon>FProfil.cs</DependentUpon>
+    <EmbeddedResource Include="FEdit.resx">
+      <DependentUpon>FEdit.cs</DependentUpon>
     </EmbeddedResource>
     <EmbeddedResource Include="KButton.resx">
       <DependentUpon>KButton.cs</DependentUpon>

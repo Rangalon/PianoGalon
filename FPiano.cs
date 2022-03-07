@@ -167,7 +167,7 @@ namespace PianoGalon
                         }
                         //
                         s = string.Format("Notes: {0}", NotesQty);
-                        grp.TranslateTransform(1, 1); grp.DrawString(s, KButton .Ft, Brushes.Black, RecNotes, KButton.StrCC);
+                        grp.TranslateTransform(1, 1); grp.DrawString(s, KButton.Ft, Brushes.Black, RecNotes, KButton.StrCC);
                         grp.TranslateTransform(-1, -1); grp.DrawString(s, KButton.Ft, Brushes.LightGray, RecNotes, KButton.StrCC);
                         //
                         int r = GoodEvents + BadEvents;
@@ -447,7 +447,7 @@ namespace PianoGalon
 
         private void importToolStripMenuItem_Click(object sender, EventArgs e)
         {
-            if (CurrentExercice == null) return;
+            if (CurrentExercice == null) SetNewCurrentExercice();
             OpenFileDialog ofd = new OpenFileDialog() { Filter = "Muse Score|*.mscx" };
             ofd.ShowDialog();
             if (ofd.FileName != "")
@@ -455,9 +455,19 @@ namespace PianoGalon
 
         }
 
+        void SetNewCurrentExercice()
+        {
+            TExercice ex = new TExercice();
+            //
+            CurrentExercices.Exercices.Add(ex);
+            //
+            UpdateExercices();
+            CurrentExercice = ex;
+        }
+
         private void importMidiToolStripMenuItem_Click(object sender, EventArgs e)
         {
-            if (CurrentExercice == null) return;
+            if (CurrentExercice == null) SetNewCurrentExercice();
             OpenFileDialog ofd = new OpenFileDialog() { Filter = "Midi File|*.mid" };
             ofd.ShowDialog();
             if (ofd.FileName != "")
@@ -467,14 +477,14 @@ namespace PianoGalon
         private void newToolStripMenuItem_Click(object sender, EventArgs e)
         {
             TProfil p = new TProfil();
-            FProfil f = new FProfil(p);
+            FEdit f = new FEdit(p);
             f.ShowDialog();
             UpdateProfils();
         }
 
         private void editToolStripMenuItem_Click(object sender, EventArgs e)
         {
-            FProfil f = new FProfil(CurrentProfil);
+            FEdit f = new FEdit(CurrentProfil);
             f.ShowDialog();
             flpProfils.Refresh();
         }
@@ -503,7 +513,7 @@ namespace PianoGalon
         private void newToolStripMenuItem1_Click(object sender, EventArgs e)
         {
             TExercices exs = new TExercices();
-            FProfil f = new FProfil(exs);
+            FEdit f = new FEdit(exs);
             f.ShowDialog();
             //
             Array.Resize(ref TLecons.Exercices, TLecons.Exercices.Length + 1);
@@ -515,7 +525,7 @@ namespace PianoGalon
         private void newToolStripMenuItem2_Click(object sender, EventArgs e)
         {
             TExercice ex = new TExercice();
-            FProfil f = new FProfil(ex);
+            FEdit f = new FEdit(ex);
             f.ShowDialog();
             //
             CurrentExercices.Exercices.Add(ex);
@@ -539,6 +549,11 @@ namespace PianoGalon
 
         EPlayMode[] Pms = (EPlayMode[])Enum.GetValues(typeof(EPlayMode));
 
+        private void editToolStripMenuItem1_Click(object sender, EventArgs e)
+        {
+            FEdit f = new FEdit(CurrentExercice);
+            f.ShowDialog();
+        }
     }
 
 

@@ -1,7 +1,7 @@
 ﻿
 namespace PianoGalon
 {
-    partial class FProfil
+    partial class FEdit
     {
         /// <summary>
         /// Required designer variable.

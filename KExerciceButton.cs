@@ -15,6 +15,8 @@ namespace PianoGalon
     {
         public readonly TExercice Exercice;
 
+
+
         protected override void OnPaint(PaintEventArgs pevent)
         {
             base.OnPaint(pevent);
