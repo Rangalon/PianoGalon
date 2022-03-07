@@ -1,5 +1,4 @@
-﻿using MidiGalon;
-using System;
+﻿using System;
 using System.Collections.Generic;
 using System.Drawing;
 using System.Drawing.Drawing2D;
@@ -16,14 +15,18 @@ namespace PianoGalon
 
         public FPiano()
         {
+
             InitializeComponent();
-            ICollection<InputDevice> lst = InputDevice.GetAll();
-            if (lst.Count == 0)
-                Piano = new TPiano(null);
-            else
-                Piano = new TPiano(lst.First());
+            Piano = new TPiano();
+
+
+
+            // Thread.Sleep(60000);
+
             Piano.KeyEvent += Piano_KeyEvent;
         }
+
+
 
         float CurrentDate = 0;
 
@@ -456,7 +459,7 @@ namespace PianoGalon
             switch (PlayMode)
             {
                 case EPlayMode.Stairs:
-                    CurrentDate = ChordTargets.Min(o => o.Date);
+                    if (ChordTargets.Length > 0) CurrentDate = ChordTargets.Min(o => o.Date);
                     break;
                 case EPlayMode.Escalators:
                     DtStart = DateTime.Now.AddSeconds(5 * TimeRatio);

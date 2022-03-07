@@ -1,4 +1,5 @@
-﻿using MidiGalon;
+﻿ 
+using MidiGalon;
 using System;
 using System.Collections.Generic;
 using System.Linq;
@@ -15,6 +16,8 @@ namespace PianoGalon
         [STAThread]
         static void Main()
         {
+
+    
             //TMidiFile mf = new TMidiFile(@"C:\Users\Public\Documents\Piano\1.mid");
             Application.EnableVisualStyles();
             Application.SetCompatibleTextRenderingDefault(false);

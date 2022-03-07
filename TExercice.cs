@@ -1,4 +1,5 @@
 ﻿using MidiGalon;
+using MidiGalon.MidiFile;
 using System;
 using System.Collections.Generic;
 using System.Drawing.Drawing2D;
@@ -136,21 +137,24 @@ namespace PianoGalon
         {
             foreach (TChord chd in Chords)
                 chd.ComputePaths(piano, ChordTargets);
-            float total = ChordTargets.Max(o => o.Date + o.Duration) + Gap;
-            switch (ExerciceType)
+            if (Chords.Length > 0)
             {
-                case EExerciceType.RightLeft:
-                    foreach (TChordTarget cto in ChordTargets.ToArray())
-                        ChordTargets.Add(cto.Clone(-12, total, piano));
-                    break;
-                case EExerciceType.RightLeftBoth:
-                    foreach (TChordTarget cto in ChordTargets.ToArray())
-                    {
-                        ChordTargets.Add(cto.Clone(-12, total, piano));
-                        ChordTargets.Add(cto.Clone(0, total * 2, piano));
-                        ChordTargets.Add(cto.Clone(-12, total * 2, piano));
-                    }
-                    break;
+                float total = ChordTargets.Max(o => o.Date + o.Duration) + Gap;
+                switch (ExerciceType)
+                {
+                    case EExerciceType.RightLeft:
+                        foreach (TChordTarget cto in ChordTargets.ToArray())
+                            ChordTargets.Add(cto.Clone(-12, total, piano));
+                        break;
+                    case EExerciceType.RightLeftBoth:
+                        foreach (TChordTarget cto in ChordTargets.ToArray())
+                        {
+                            ChordTargets.Add(cto.Clone(-12, total, piano));
+                            ChordTargets.Add(cto.Clone(0, total * 2, piano));
+                            ChordTargets.Add(cto.Clone(-12, total * 2, piano));
+                        }
+                        break;
+                }
             }
         }
 

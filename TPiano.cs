@@ -1,31 +1,66 @@
 ﻿
 using MidiGalon;
+using MidiGalon.MidiInput;
 using System;
-using System.Collections.Generic;
 using System.Drawing;
 using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
+using System.Threading;
+using static MidiGalon.MidiInput.WinMM;
 
 namespace PianoGalon
 {
     public class TPiano
     {
-        InputDevice device;
+        //InputDevice device;
 
-        public TPiano(InputDevice p)
+
+        void InitThreaded()
         {
-            device = p;
-            if (p != null)
-            {
-                p.EventReceived += P_EventReceived;
-                p.StartEventsListening();
-            }
+            WinMMMidiAccess ima = (WinMMMidiAccess)MidiAccessManager.Default;
+            WinMMPortDetails mpd = (WinMMPortDetails)ima.Inputs.First();
+
+          //  Thread.Sleep(1000);
+
+            WinMMMidiInput input = (WinMMMidiInput)ima.OpenInputAsync(mpd.Id).Result;
+
+        //    Thread.Sleep(1000);
+            input.MessageReceived += Input_MessageReceived;
+
+       //     Thread.Sleep(6000);
+        }
+
+
+        public TPiano()
+        {
+
+            //
             Keys = new TKey[113];
-            //for (int i = 0; i < Keys.Length; i++) Keys[i] = new TKey(i); 
             for (int i = 21; i < 109; i++) Keys[i] = new TKey(i);
             Max = Keys.Where(o => o != null).Max(o => o.Max);
             Min = Keys.Where(o => o != null).Min(o => o.Min);
+
+            Thread th = new Thread(InitThreaded); th.Start();
+
+        }
+
+        private void Input_MessageReceived(object sender, MidiReceivedEventArgs e)
+        {
+            if (e.Length > 1)
+            {
+                TPianoEvent pe = new TPianoEvent();
+                if (e.Data[2] == 0)
+                    pe.EventType = EChordEventType.Released;
+                else
+                {
+                    pe.EventType = EChordEventType.Pressed;
+                    pe.Velocity = e.Data[2];
+                }
+                pe.Number = e.Data[1];
+                Keys[pe.Number].Velocity = e.Data[2];
+                string s = "";
+                foreach (byte b in e.Data) s += b.ToString() + " ";
+                Console.WriteLine(string.Format("{0} {1} {2}", s, e.Length, e.Timestamp));
+            }
         }
 
         public delegate void NoteEventCallBack(int note, int velocity);
@@ -73,7 +108,7 @@ namespace PianoGalon
                 start = TotalW * i;
                 float w = 0, h1 = 0, h2 = 0;
 
-                switch (Number  % 12)
+                switch (Number % 12)
                 {
                     case 0: Name = "Do"; break;
                     case 2: Name = "Re"; break;
@@ -230,35 +265,35 @@ namespace PianoGalon
         public readonly float Max;
         public readonly float Min;
 
-        private void P_EventReceived(object sender, MidiEventReceivedEventArgs e)
-        {
+        //private void P_EventReceived(object sender, MidiEventReceivedEventArgs e)
+        //{
 
-            switch (e.Event.EventType)
-            {
-                case MidiEventType.ActiveSensing:
-                    break;
-                case MidiEventType.TimingClock:
-                    break;
-                case MidiEventType.NoteOn:
-                    NoteOnEvent noe = (NoteOnEvent)e.Event;
-                    Keys[noe.NoteNumber].Velocity = noe.Velocity;
-                    NoteEvent?.Invoke(noe.NoteNumber, noe.Velocity);
-                    TPianoEvent ev = new TPianoEvent();
-                    ev.Number = noe.NoteNumber;
-                    if (noe.Velocity == 0)
-                        ev.EventType = EChordEventType.Released;
-                    else
-                        ev.EventType = EChordEventType.Pressed;
-                    KeyEvent?.Invoke(ev);
-                    break;
-                case MidiEventType.NoteOff:
-                    break;
-                default:
-                    break;
-            }
+        //    switch (e.Event.EventType)
+        //    {
+        //        case MidiEventType.ActiveSensing:
+        //            break;
+        //        case MidiEventType.TimingClock:
+        //            break;
+        //        case MidiEventType.NoteOn:
+        //            NoteOnEvent noe = (NoteOnEvent)e.Event;
+        //            Keys[noe.NoteNumber].Velocity = noe.Velocity;
+        //            NoteEvent?.Invoke(noe.NoteNumber, noe.Velocity);
+        //            TPianoEvent ev = new TPianoEvent();
+        //            ev.Number = noe.NoteNumber;
+        //            if (noe.Velocity == 0)
+        //                ev.EventType = EChordEventType.Released;
+        //            else
+        //                ev.EventType = EChordEventType.Pressed;
+        //            KeyEvent?.Invoke(ev);
+        //            break;
+        //        case MidiEventType.NoteOff:
+        //            break;
+        //        default:
+        //            break;
+        //    }
 
 
-        }
+        //}
 
         public delegate void KeyEventCallBack(TPianoEvent e);
 
@@ -269,6 +304,7 @@ namespace PianoGalon
     public class TPianoEvent
     {
         public int Number;
+        public int Velocity;
         public EChordEventType EventType;
     }
 }
