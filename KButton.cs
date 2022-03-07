@@ -17,8 +17,7 @@ namespace PianoGalon
 
         public static readonly Font Ft = new Font("Verdana", 14, FontStyle.Bold);
 
-        public bool IsCurrent;
-
+        
         protected GraphicsPath Path;
 
         static KButton()

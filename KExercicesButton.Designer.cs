@@ -37,7 +37,7 @@ namespace PianoGalon
         public override Size MinimumSize { get => OverallSize; set { } }
         public override Size MaximumSize { get => OverallSize; set { } }
 
-        public static readonly Size OverallSize = new Size(200, 100);
+        public static readonly Size OverallSize = new Size(400, 75);
 
         #endregion
     }

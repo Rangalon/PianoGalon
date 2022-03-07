@@ -35,6 +35,7 @@ namespace PianoGalon
             this.importToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
             this.importMidiToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
             this.newToolStripMenuItem2 = new System.Windows.Forms.ToolStripMenuItem();
+            this.editToolStripMenuItem1 = new System.Windows.Forms.ToolStripMenuItem();
             this.pbMusicScore = new System.Windows.Forms.PictureBox();
             this.pbPiano = new System.Windows.Forms.PictureBox();
             this.cmsProfils = new System.Windows.Forms.ContextMenuStrip(this.components);
@@ -43,14 +44,15 @@ namespace PianoGalon
             this.cmsExercices = new System.Windows.Forms.ContextMenuStrip(this.components);
             this.saveToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
             this.newToolStripMenuItem1 = new System.Windows.Forms.ToolStripMenuItem();
+            this.editToolStripMenuItem2 = new System.Windows.Forms.ToolStripMenuItem();
             this.tmrSave = new System.Windows.Forms.Timer(this.components);
-            this.editToolStripMenuItem1 = new System.Windows.Forms.ToolStripMenuItem();
+            this.btnNext = new PianoGalon.KPathButton();
+            this.btnPrev = new PianoGalon.KPathButton();
             this.btnClose = new PianoGalon.KPathButton();
-            this.flpExercice = new PianoGalon.KFlowLayoutPanel();
-            this.flpProfils = new PianoGalon.KFlowLayoutPanel();
-            this.flpExercices = new PianoGalon.KFlowLayoutPanel();
-            this.label1 = new PianoGalon.KLabel();
             this.btnMinimize = new PianoGalon.KPathButton();
+            this.kpButton = new PianoGalon.KProfilButton();
+            this.keButton = new PianoGalon.KExerciceButton();
+            this.kesButton = new PianoGalon.KExercicesButton();
             this.tableLayoutPanel1.SuspendLayout();
             this.cmsExercice.SuspendLayout();
             ((System.ComponentModel.ISupportInitialize)(this.pbMusicScore)).BeginInit();
@@ -62,26 +64,30 @@ namespace PianoGalon
             // tableLayoutPanel1
             // 
             this.tableLayoutPanel1.BackColor = System.Drawing.Color.Black;
-            this.tableLayoutPanel1.ColumnCount = 4;
+            this.tableLayoutPanel1.ColumnCount = 8;
             this.tableLayoutPanel1.ColumnStyles.Add(new System.Windows.Forms.ColumnStyle());
-            this.tableLayoutPanel1.ColumnStyles.Add(new System.Windows.Forms.ColumnStyle(System.Windows.Forms.SizeType.Percent, 50F));
-            this.tableLayoutPanel1.ColumnStyles.Add(new System.Windows.Forms.ColumnStyle(System.Windows.Forms.SizeType.Percent, 50F));
             this.tableLayoutPanel1.ColumnStyles.Add(new System.Windows.Forms.ColumnStyle());
-            this.tableLayoutPanel1.Controls.Add(this.btnClose, 3, 0);
-            this.tableLayoutPanel1.Controls.Add(this.flpExercice, 2, 1);
-            this.tableLayoutPanel1.Controls.Add(this.pbMusicScore, 0, 2);
-            this.tableLayoutPanel1.Controls.Add(this.pbPiano, 0, 5);
-            this.tableLayoutPanel1.Controls.Add(this.flpProfils, 1, 0);
-            this.tableLayoutPanel1.Controls.Add(this.flpExercices, 0, 1);
-            this.tableLayoutPanel1.Controls.Add(this.label1, 2, 0);
+            this.tableLayoutPanel1.ColumnStyles.Add(new System.Windows.Forms.ColumnStyle(System.Windows.Forms.SizeType.Percent, 33.33333F));
+            this.tableLayoutPanel1.ColumnStyles.Add(new System.Windows.Forms.ColumnStyle());
+            this.tableLayoutPanel1.ColumnStyles.Add(new System.Windows.Forms.ColumnStyle(System.Windows.Forms.SizeType.Percent, 33.33333F));
+            this.tableLayoutPanel1.ColumnStyles.Add(new System.Windows.Forms.ColumnStyle());
+            this.tableLayoutPanel1.ColumnStyles.Add(new System.Windows.Forms.ColumnStyle(System.Windows.Forms.SizeType.Percent, 33.33333F));
+            this.tableLayoutPanel1.ColumnStyles.Add(new System.Windows.Forms.ColumnStyle());
+            this.tableLayoutPanel1.Controls.Add(this.btnNext, 6, 0);
+            this.tableLayoutPanel1.Controls.Add(this.btnPrev, 4, 0);
+            this.tableLayoutPanel1.Controls.Add(this.btnClose, 7, 0);
+            this.tableLayoutPanel1.Controls.Add(this.pbMusicScore, 0, 1);
+            this.tableLayoutPanel1.Controls.Add(this.pbPiano, 0, 4);
             this.tableLayoutPanel1.Controls.Add(this.btnMinimize, 0, 0);
+            this.tableLayoutPanel1.Controls.Add(this.kpButton, 1, 0);
+            this.tableLayoutPanel1.Controls.Add(this.keButton, 5, 0);
+            this.tableLayoutPanel1.Controls.Add(this.kesButton, 3, 0);
             this.tableLayoutPanel1.Dock = System.Windows.Forms.DockStyle.Fill;
             this.tableLayoutPanel1.Location = new System.Drawing.Point(0, 0);
             this.tableLayoutPanel1.Margin = new System.Windows.Forms.Padding(5, 4, 5, 4);
             this.tableLayoutPanel1.Name = "tableLayoutPanel1";
-            this.tableLayoutPanel1.RowCount = 6;
-            this.tableLayoutPanel1.RowStyles.Add(new System.Windows.Forms.RowStyle(System.Windows.Forms.SizeType.Absolute, 60F));
-            this.tableLayoutPanel1.RowStyles.Add(new System.Windows.Forms.RowStyle(System.Windows.Forms.SizeType.Absolute, 120F));
+            this.tableLayoutPanel1.RowCount = 5;
+            this.tableLayoutPanel1.RowStyles.Add(new System.Windows.Forms.RowStyle());
             this.tableLayoutPanel1.RowStyles.Add(new System.Windows.Forms.RowStyle(System.Windows.Forms.SizeType.Percent, 25F));
             this.tableLayoutPanel1.RowStyles.Add(new System.Windows.Forms.RowStyle(System.Windows.Forms.SizeType.Percent, 25F));
             this.tableLayoutPanel1.RowStyles.Add(new System.Windows.Forms.RowStyle(System.Windows.Forms.SizeType.Percent, 25F));
@@ -98,7 +104,7 @@ namespace PianoGalon
             this.newToolStripMenuItem2,
             this.editToolStripMenuItem1});
             this.cmsExercice.Name = "cmsExercice";
-            this.cmsExercice.Size = new System.Drawing.Size(222, 138);
+            this.cmsExercice.Size = new System.Drawing.Size(222, 116);
             // 
             // importToolStripMenuItem
             // 
@@ -121,15 +127,22 @@ namespace PianoGalon
             this.newToolStripMenuItem2.Text = "New";
             this.newToolStripMenuItem2.Click += new System.EventHandler(this.newToolStripMenuItem2_Click);
             // 
+            // editToolStripMenuItem1
+            // 
+            this.editToolStripMenuItem1.Name = "editToolStripMenuItem1";
+            this.editToolStripMenuItem1.Size = new System.Drawing.Size(221, 28);
+            this.editToolStripMenuItem1.Text = "Edit";
+            this.editToolStripMenuItem1.Click += new System.EventHandler(this.editToolStripMenuItem1_Click);
+            // 
             // pbMusicScore
             // 
-            this.tableLayoutPanel1.SetColumnSpan(this.pbMusicScore, 4);
+            this.tableLayoutPanel1.SetColumnSpan(this.pbMusicScore, 8);
             this.pbMusicScore.Dock = System.Windows.Forms.DockStyle.Fill;
-            this.pbMusicScore.Location = new System.Drawing.Point(1, 181);
+            this.pbMusicScore.Location = new System.Drawing.Point(1, 78);
             this.pbMusicScore.Margin = new System.Windows.Forms.Padding(1);
             this.pbMusicScore.Name = "pbMusicScore";
             this.tableLayoutPanel1.SetRowSpan(this.pbMusicScore, 3);
-            this.pbMusicScore.Size = new System.Drawing.Size(1723, 439);
+            this.pbMusicScore.Size = new System.Drawing.Size(1723, 514);
             this.pbMusicScore.TabIndex = 2;
             this.pbMusicScore.TabStop = false;
             this.pbMusicScore.Click += new System.EventHandler(this.pbMusicScore_Click);
@@ -137,12 +150,12 @@ namespace PianoGalon
             // 
             // pbPiano
             // 
-            this.tableLayoutPanel1.SetColumnSpan(this.pbPiano, 4);
+            this.tableLayoutPanel1.SetColumnSpan(this.pbPiano, 8);
             this.pbPiano.Dock = System.Windows.Forms.DockStyle.Fill;
-            this.pbPiano.Location = new System.Drawing.Point(1, 622);
+            this.pbPiano.Location = new System.Drawing.Point(1, 594);
             this.pbPiano.Margin = new System.Windows.Forms.Padding(1);
             this.pbPiano.Name = "pbPiano";
-            this.pbPiano.Size = new System.Drawing.Size(1723, 145);
+            this.pbPiano.Size = new System.Drawing.Size(1723, 173);
             this.pbPiano.TabIndex = 0;
             this.pbPiano.TabStop = false;
             // 
@@ -174,9 +187,10 @@ namespace PianoGalon
             this.cmsExercices.Font = new System.Drawing.Font("Verdana", 14.25F, System.Drawing.FontStyle.Bold, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
             this.cmsExercices.Items.AddRange(new System.Windows.Forms.ToolStripItem[] {
             this.saveToolStripMenuItem,
-            this.newToolStripMenuItem1});
+            this.newToolStripMenuItem1,
+            this.editToolStripMenuItem2});
             this.cmsExercices.Name = "cmsExercices";
-            this.cmsExercices.Size = new System.Drawing.Size(133, 60);
+            this.cmsExercices.Size = new System.Drawing.Size(133, 88);
             // 
             // saveToolStripMenuItem
             // 
@@ -192,73 +206,55 @@ namespace PianoGalon
             this.newToolStripMenuItem1.Text = "New";
             this.newToolStripMenuItem1.Click += new System.EventHandler(this.newToolStripMenuItem1_Click);
             // 
+            // editToolStripMenuItem2
+            // 
+            this.editToolStripMenuItem2.Name = "editToolStripMenuItem2";
+            this.editToolStripMenuItem2.Size = new System.Drawing.Size(132, 28);
+            this.editToolStripMenuItem2.Text = "Edit";
+            this.editToolStripMenuItem2.Click += new System.EventHandler(this.editToolStripMenuItem2_Click);
+            // 
             // tmrSave
             // 
             this.tmrSave.Enabled = true;
             this.tmrSave.Interval = 10000;
             this.tmrSave.Tick += new System.EventHandler(this.tmrSave_Tick);
             // 
-            // editToolStripMenuItem1
+            // btnNext
             // 
-            this.editToolStripMenuItem1.Name = "editToolStripMenuItem1";
-            this.editToolStripMenuItem1.Size = new System.Drawing.Size(221, 28);
-            this.editToolStripMenuItem1.Text = "Edit";
-            this.editToolStripMenuItem1.Click += new System.EventHandler(this.editToolStripMenuItem1_Click);
+            this.btnNext.ButtonType = PianoGalon.KPathButton.EButtonType.Next;
+            this.btnNext.Location = new System.Drawing.Point(1476, 1);
+            this.btnNext.Margin = new System.Windows.Forms.Padding(1);
+            this.btnNext.Name = "btnNext";
+            this.btnNext.Size = new System.Drawing.Size(75, 75);
+            this.btnNext.TabIndex = 17;
+            this.btnNext.Text = "kImageButton2";
+            this.btnNext.UseVisualStyleBackColor = true;
+            this.btnNext.Click += new System.EventHandler(this.btnNext_Click);
+            // 
+            // btnPrev
+            // 
+            this.btnPrev.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Right)));
+            this.btnPrev.ButtonType = PianoGalon.KPathButton.EButtonType.Prev;
+            this.btnPrev.Location = new System.Drawing.Point(997, 1);
+            this.btnPrev.Margin = new System.Windows.Forms.Padding(1);
+            this.btnPrev.Name = "btnPrev";
+            this.btnPrev.Size = new System.Drawing.Size(75, 75);
+            this.btnPrev.TabIndex = 16;
+            this.btnPrev.Text = "kImageButton2";
+            this.btnPrev.UseVisualStyleBackColor = true;
+            this.btnPrev.Click += new System.EventHandler(this.btnPrev_Click);
             // 
             // btnClose
             // 
             this.btnClose.ButtonType = PianoGalon.KPathButton.EButtonType.Close;
-            this.btnClose.Location = new System.Drawing.Point(1665, 1);
+            this.btnClose.Location = new System.Drawing.Point(1647, 1);
             this.btnClose.Margin = new System.Windows.Forms.Padding(1);
             this.btnClose.Name = "btnClose";
-            this.btnClose.Size = new System.Drawing.Size(58, 58);
+            this.btnClose.Size = new System.Drawing.Size(75, 75);
             this.btnClose.TabIndex = 12;
             this.btnClose.Text = "kImageButton2";
             this.btnClose.UseVisualStyleBackColor = true;
             this.btnClose.Click += new System.EventHandler(this.btnClose_Click);
-            // 
-            // flpExercice
-            // 
-            this.tableLayoutPanel1.SetColumnSpan(this.flpExercice, 2);
-            this.flpExercice.ContextMenuStrip = this.cmsExercice;
-            this.flpExercice.Dock = System.Windows.Forms.DockStyle.Fill;
-            this.flpExercice.Enabled = false;
-            this.flpExercice.Location = new System.Drawing.Point(863, 61);
-            this.flpExercice.Margin = new System.Windows.Forms.Padding(1);
-            this.flpExercice.Name = "flpExercice";
-            this.flpExercice.Size = new System.Drawing.Size(861, 118);
-            this.flpExercice.TabIndex = 9;
-            // 
-            // flpProfils
-            // 
-            this.flpProfils.ContextMenuStrip = this.cmsProfils;
-            this.flpProfils.Dock = System.Windows.Forms.DockStyle.Fill;
-            this.flpProfils.Location = new System.Drawing.Point(61, 1);
-            this.flpProfils.Margin = new System.Windows.Forms.Padding(1);
-            this.flpProfils.Name = "flpProfils";
-            this.flpProfils.Size = new System.Drawing.Size(800, 58);
-            this.flpProfils.TabIndex = 7;
-            // 
-            // flpExercices
-            // 
-            this.tableLayoutPanel1.SetColumnSpan(this.flpExercices, 2);
-            this.flpExercices.ContextMenuStrip = this.cmsExercices;
-            this.flpExercices.Dock = System.Windows.Forms.DockStyle.Fill;
-            this.flpExercices.Enabled = false;
-            this.flpExercices.Location = new System.Drawing.Point(1, 61);
-            this.flpExercices.Margin = new System.Windows.Forms.Padding(1);
-            this.flpExercices.Name = "flpExercices";
-            this.flpExercices.Size = new System.Drawing.Size(860, 118);
-            this.flpExercices.TabIndex = 8;
-            // 
-            // label1
-            // 
-            this.label1.Dock = System.Windows.Forms.DockStyle.Fill;
-            this.label1.Location = new System.Drawing.Point(863, 1);
-            this.label1.Margin = new System.Windows.Forms.Padding(1);
-            this.label1.Name = "label1";
-            this.label1.Size = new System.Drawing.Size(800, 58);
-            this.label1.TabIndex = 10;
             // 
             // btnMinimize
             // 
@@ -266,11 +262,56 @@ namespace PianoGalon
             this.btnMinimize.Location = new System.Drawing.Point(1, 1);
             this.btnMinimize.Margin = new System.Windows.Forms.Padding(1);
             this.btnMinimize.Name = "btnMinimize";
-            this.btnMinimize.Size = new System.Drawing.Size(58, 58);
+            this.btnMinimize.Size = new System.Drawing.Size(75, 75);
             this.btnMinimize.TabIndex = 11;
             this.btnMinimize.Text = "kImageButton1";
             this.btnMinimize.UseVisualStyleBackColor = true;
             this.btnMinimize.Click += new System.EventHandler(this.btnMinimize_Click);
+            // 
+            // kpButton
+            // 
+            this.kpButton.Anchor = System.Windows.Forms.AnchorStyles.Top;
+            this.kpButton.ContextMenuStrip = this.cmsProfils;
+            this.kpButton.Location = new System.Drawing.Point(78, 1);
+            this.kpButton.Margin = new System.Windows.Forms.Padding(1);
+            this.kpButton.MaximumSize = new System.Drawing.Size(250, 75);
+            this.kpButton.MinimumSize = new System.Drawing.Size(250, 75);
+            this.kpButton.Name = "kpButton";
+            this.kpButton.Profil = null;
+            this.kpButton.Size = new System.Drawing.Size(250, 75);
+            this.kpButton.TabIndex = 13;
+            this.kpButton.Text = "kProfilButton1";
+            this.kpButton.UseVisualStyleBackColor = true;
+            this.kpButton.Click += new System.EventHandler(this.kProfilButton1_Click);
+            // 
+            // keButton
+            // 
+            this.keButton.Exercice = null;
+            this.keButton.Location = new System.Drawing.Point(1074, 1);
+            this.keButton.Margin = new System.Windows.Forms.Padding(1);
+            this.keButton.MaximumSize = new System.Drawing.Size(400, 75);
+            this.keButton.MinimumSize = new System.Drawing.Size(400, 75);
+            this.keButton.Name = "keButton";
+            this.keButton.Size = new System.Drawing.Size(400, 75);
+            this.keButton.TabIndex = 14;
+            this.keButton.Text = "kExerciceButton1";
+            this.keButton.UseVisualStyleBackColor = true;
+            this.keButton.Click += new System.EventHandler(this.kExerciceButton1_Click);
+            // 
+            // kesButton
+            // 
+            this.kesButton.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Right)));
+            this.kesButton.Exercices = null;
+            this.kesButton.Location = new System.Drawing.Point(501, 1);
+            this.kesButton.Margin = new System.Windows.Forms.Padding(1);
+            this.kesButton.MaximumSize = new System.Drawing.Size(400, 75);
+            this.kesButton.MinimumSize = new System.Drawing.Size(400, 75);
+            this.kesButton.Name = "kesButton";
+            this.kesButton.Size = new System.Drawing.Size(400, 75);
+            this.kesButton.TabIndex = 15;
+            this.kesButton.Text = "kExercicesButton1";
+            this.kesButton.UseVisualStyleBackColor = true;
+            this.kesButton.Click += new System.EventHandler(this.kExercicesButton1_Click);
             // 
             // FPiano
             // 
@@ -308,18 +349,20 @@ namespace PianoGalon
         private System.Windows.Forms.ContextMenuStrip cmsExercice;
         private System.Windows.Forms.ToolStripMenuItem importToolStripMenuItem;
         private System.Windows.Forms.ToolStripMenuItem importMidiToolStripMenuItem;
-        private KFlowLayoutPanel flpProfils;
         private System.Windows.Forms.ContextMenuStrip cmsProfils;
         private System.Windows.Forms.ToolStripMenuItem newToolStripMenuItem;
         private System.Windows.Forms.ToolStripMenuItem editToolStripMenuItem;
-        private KFlowLayoutPanel flpExercices;
-        private KFlowLayoutPanel flpExercice;
-        private KLabel label1;
         private KPathButton btnClose;
         private KPathButton btnMinimize;
         private System.Windows.Forms.ToolStripMenuItem newToolStripMenuItem1;
         private System.Windows.Forms.ToolStripMenuItem newToolStripMenuItem2;
         private System.Windows.Forms.ToolStripMenuItem editToolStripMenuItem1;
+        private System.Windows.Forms.ToolStripMenuItem editToolStripMenuItem2;
+        private KProfilButton kpButton;
+        private KExerciceButton keButton;
+        private KExercicesButton kesButton;
+        private KPathButton btnNext;
+        private KPathButton btnPrev;
     }
 }
 

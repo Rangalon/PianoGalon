@@ -54,12 +54,15 @@ namespace PianoGalon
 
         private void Form1_Load(object sender, EventArgs e)
         {
-            UpdateProfils();
-            UpdateLecons();
             Thread th;
             th = new Thread(DoerDrawPiano); th.Start();
             th = new Thread(DoerDrawMusicScore); th.Start();
             th = new Thread(DoerComputeMusicScore); th.Start();
+            foreach (Control c in tableLayoutPanel1.Controls)
+            {
+                c.KeyDown += Ke_KeyDown;
+                c.KeyUp += Ke_KeyUp;
+            }
         }
 
         private void DoerComputeMusicScore()
@@ -75,23 +78,24 @@ namespace PianoGalon
                         Properties.Resources.Escalators.Height);
 
                 RecPlay = new Rectangle(
-                   (int)(0.5 * (sz.Width - Properties.Resources.Play.Width)),
+                    0,
                     0,
                     Properties.Resources.Play.Width,
                     Properties.Resources.Play.Height);
 
                 RecNotes = RecPlay;
                 RecNotes.Width *= 2;
-                RecNotes.X -= RecNotes.Width;
-                RecScore = RecPlay;
-                RecScore.X += RecScore.Width;
-                RecScore.Width *= 2;
+                RecNotes.Y += RecNotes.Height;
+                RecScore = RecNotes;
+                RecScore.Y += RecScore.Height;
                 Thread.Sleep(100);
             }
         }
 
         Rectangle RecNotes;
         Rectangle RecScore;
+
+
 
         private void DoerDrawMusicScore()
         {
@@ -124,7 +128,7 @@ namespace PianoGalon
                 if (grp != null)
                 {
                     InitGrp(grp, xratio, 1);
-                    if (CurrentExercice != null)
+                    if (keButton.Exercice != null)
                     {
                         grp.TranslateTransform(0, sz.Height);
                         grp.ScaleTransform(1, -1);
@@ -147,12 +151,10 @@ namespace PianoGalon
                         }
                     }
                     //
-                    if (CurrentExercice != null && CurrentProfil != null)
+                    if (keButton.Exercice != null && kpButton.Profil != null)
                     {
                         grp.ResetTransform();
-                        string s = string.Format("{2}\n{0}\n\t{1}", CurrentExercices.Name, CurrentExercice.Name, CurrentProfil.Name);
-                        grp.TranslateTransform(1, 1); grp.DrawString(s, KButton.Ft, Brushes.Black, 0, 0);
-                        grp.TranslateTransform(-1, -1); grp.DrawString(s, KButton.Ft, Brushes.LightGray, 0, 0);
+                        string s;
                         //
                         grp.DrawImage(Properties.Resources.Play, RecPlay);
                         //
@@ -274,97 +276,9 @@ namespace PianoGalon
 
 
 
-        void UpdateProfils()
-        {
-
-            foreach (TProfil p in TProfil.Profils)
-            {
-                KProfilButton kb = flpProfils.Controls.OfType<KProfilButton>().FirstOrDefault(o => o.Profil == p);
-                if (kb == null)
-                {
-                    kb = new KProfilButton(p) { Size = KProfilButton.OverallSize };
-                    flpProfils.Controls.Add(kb);
-                    kb.Margin = new Padding(1);
-                    kb.ContextMenuStrip = cmsProfils;
-                    kb.Click += Kb_Click;
-                }
-            }
-        }
-
-        private void Kb_Click(object sender, EventArgs e)
-        {
-            KProfilButton kb = (KProfilButton)sender;
-            foreach (KProfilButton kp in flpProfils.Controls.OfType<KProfilButton>()) kp.IsCurrent = false;
-            kb.IsCurrent = true;
-            CurrentProfil = kb.Profil;
-            flpExercices.Enabled = true;
-            flpProfils.Refresh();
-        }
-
-        void UpdateLecons()
-        {
-
-            foreach (TExercices exs in TLecons.Exercices)
-            {
-                KExercicesButton kes = flpExercices.Controls.OfType<KExercicesButton>().FirstOrDefault(o => o.Exercices == exs);
-                if (kes == null)
-                {
-                    kes = new KExercicesButton(exs); kes.Size = KExercicesButton.OverallSize;
-                    kes.Margin = new Padding(1);
-                    flpExercices.Controls.Add(kes);
-                    kes.Click += Kes_Click;
-                }
-            }
-        }
-
-        private void Kes_Click(object sender, EventArgs e)
-        {
-            KExercicesButton kes = (KExercicesButton)sender;
-
-            foreach (KExercicesButton kp in flpExercices.Controls.OfType<KExercicesButton>()) kp.IsCurrent = false;
-            kes.IsCurrent = true;
-
-            flpExercices.Refresh();
-
-            flpExercice.Enabled = true;
-
-            CurrentExercices = kes.Exercices;
-            UpdateExercices();
-            label1.Text = CurrentExercices.Name;
-        }
-
-        void UpdateExercices()
-        {
-            foreach (KExerciceButton ke in flpExercice.Controls.OfType<KExerciceButton>().ToArray())
-            {
-                flpExercice.Controls.Remove(ke);
-                ke.Dispose();
-            }
 
 
-            CurrentExercices.Exercices.Sort(TExerciceComparer.Default);
 
-            foreach (TExercice ex in CurrentExercices.Exercices)
-            {
-                KExerciceButton ke = flpExercices.Controls.OfType<KExerciceButton>().FirstOrDefault(o => o.Exercice == ex);
-                if (ke == null)
-                {
-                    ke = new KExerciceButton(ex); ke.Size = KExerciceButton.OverallSize;
-                    flpExercice.Controls.Add(ke);
-                    ke.Margin = new Padding(1);
-                    ke.Click += Ke_Click;
-                    ke.KeyUp += Ke_KeyUp;
-                    ke.KeyDown += Ke_KeyDown;
-                }
-            }
-
-
-        }
-
-        private void Ke_KeyDown(object sender, KeyEventArgs e)
-        {
-            Piano_KeyEvent(new TPianoEvent() { EventType = EChordEventType.Pressed, Number = GetPianoKey(e.KeyValue) });
-        }
 
         private int GetPianoKey(int keyValue)
         {
@@ -381,25 +295,12 @@ namespace PianoGalon
         {
             Piano_KeyEvent(new TPianoEvent() { EventType = EChordEventType.Released, Number = GetPianoKey(e.KeyValue) });
         }
-
-        private void Ke_Click(object sender, EventArgs e)
+        private void Ke_KeyDown(object sender, KeyEventArgs e)
         {
-            KExerciceButton ke = (KExerciceButton)sender;
-            foreach (KExerciceButton kp in flpExercice.Controls.OfType<KExerciceButton>()) kp.IsCurrent = false;
-            ke.IsCurrent = true;
-            flpExercice.Refresh();
-
-            CurrentExercice = ke.Exercice;
-            List<GraphicsPath> wlst = new List<GraphicsPath>();
-            List<GraphicsPath> blst = new List<GraphicsPath>();
-            List<TChordTarget> ctlst = new List<TChordTarget>();
-            CurrentExercice.ComputePaths(Piano, wlst, blst, ctlst);
-            WhitePaths = wlst.ToArray();
-            BlackPaths = blst.ToArray();
-            ctlst.Sort(TChordTargetComparer.Default);
-            ChordTargets = ctlst.ToArray();
-            ResetExercice();
+            Piano_KeyEvent(new TPianoEvent() { EventType = EChordEventType.Pressed, Number = GetPianoKey(e.KeyValue) });
         }
+
+
 
         int NotesQty;
         int BadEvents = 0;
@@ -419,7 +320,6 @@ namespace PianoGalon
             foreach (TChordTarget ct in ChordTargets) ct.Done = false;
         }
 
-        TProfil CurrentProfil;
 
 
         private void tmrSave_Tick(object sender, EventArgs e)
@@ -429,7 +329,6 @@ namespace PianoGalon
 
 
 
-        TExercices CurrentExercices;
 
         private void saveToolStripMenuItem_Click(object sender, EventArgs e)
         {
@@ -443,15 +342,14 @@ namespace PianoGalon
         GraphicsPath[] BlackPaths = { };
         TChordTarget[] ChordTargets = { };
 
-        TExercice CurrentExercice;
 
         private void importToolStripMenuItem_Click(object sender, EventArgs e)
         {
-            if (CurrentExercice == null) SetNewCurrentExercice();
+            if (keButton.Exercice == null) SetNewCurrentExercice();
             OpenFileDialog ofd = new OpenFileDialog() { Filter = "Muse Score|*.mscx" };
             ofd.ShowDialog();
             if (ofd.FileName != "")
-                CurrentExercice.ImportMuse(ofd.FileName);
+                keButton.Exercice.ImportMuse(ofd.FileName);
 
         }
 
@@ -459,19 +357,33 @@ namespace PianoGalon
         {
             TExercice ex = new TExercice();
             //
-            CurrentExercices.Exercices.Add(ex);
-            //
-            UpdateExercices();
-            CurrentExercice = ex;
+            kesButton.Exercices.Exercices.Add(ex);
+            // 
+            keButton.Exercice = ex;
+            // 
+            LoadExercice();
+        }
+
+        void LoadExercice()
+        {
+            List<GraphicsPath> wlst = new List<GraphicsPath>();
+            List<GraphicsPath> blst = new List<GraphicsPath>();
+            List<TChordTarget> ctlst = new List<TChordTarget>();
+            keButton.Exercice.ComputePaths(Piano, wlst, blst, ctlst);
+            WhitePaths = wlst.ToArray();
+            BlackPaths = blst.ToArray();
+            ctlst.Sort(TChordTargetComparer.Default);
+            ChordTargets = ctlst.ToArray();
+            ResetExercice();
         }
 
         private void importMidiToolStripMenuItem_Click(object sender, EventArgs e)
         {
-            if (CurrentExercice == null) SetNewCurrentExercice();
+            if (keButton.Exercice == null) SetNewCurrentExercice();
             OpenFileDialog ofd = new OpenFileDialog() { Filter = "Midi File|*.mid" };
             ofd.ShowDialog();
             if (ofd.FileName != "")
-                CurrentExercice.ImportMidi(ofd.FileName);
+                keButton.Exercice.ImportMidi(ofd.FileName);
         }
 
         private void newToolStripMenuItem_Click(object sender, EventArgs e)
@@ -479,14 +391,13 @@ namespace PianoGalon
             TProfil p = new TProfil();
             FEdit f = new FEdit(p);
             f.ShowDialog();
-            UpdateProfils();
+            kpButton.Profil = p;
         }
 
         private void editToolStripMenuItem_Click(object sender, EventArgs e)
         {
-            FEdit f = new FEdit(CurrentProfil);
+            FEdit f = new FEdit(kpButton.Profil);
             f.ShowDialog();
-            flpProfils.Refresh();
         }
 
         private void pbMusicScore_Click(object sender, EventArgs e)
@@ -518,8 +429,6 @@ namespace PianoGalon
             //
             Array.Resize(ref TLecons.Exercices, TLecons.Exercices.Length + 1);
             TLecons.Exercices[TLecons.Exercices.Length - 1] = exs;
-            //
-            UpdateLecons();
         }
 
         private void newToolStripMenuItem2_Click(object sender, EventArgs e)
@@ -528,9 +437,8 @@ namespace PianoGalon
             FEdit f = new FEdit(ex);
             f.ShowDialog();
             //
-            CurrentExercices.Exercices.Add(ex);
+            kesButton.Exercices.Exercices.Add(ex);
             //
-            UpdateExercices();
         }
 
         public Rectangle RecPlayMode;
@@ -551,8 +459,61 @@ namespace PianoGalon
 
         private void editToolStripMenuItem1_Click(object sender, EventArgs e)
         {
-            FEdit f = new FEdit(CurrentExercice);
+            FEdit f = new FEdit(keButton.Exercice);
             f.ShowDialog();
+        }
+
+        private void editToolStripMenuItem2_Click(object sender, EventArgs e)
+        {
+            FEdit f = new FEdit(keButton.Exercice);
+            f.ShowDialog();
+        }
+
+        private void kProfilButton1_Click(object sender, EventArgs e)
+        {
+            FChoice f = new FChoice(TProfil.Profils.ToArray(), "Select your Profile");
+            f.ShowDialog();
+            if (f.SelectedObject != null) kpButton.Profil = (TProfil)f.SelectedObject;
+            kpButton.Refresh();
+        }
+
+        private void kExercicesButton1_Click(object sender, EventArgs e)
+        {
+            FChoice f = new FChoice(TLecons.Exercices, "Select the Exercices");
+            f.ShowDialog();
+            if (f.SelectedObject != null) kesButton.Exercices = (TExercices)f.SelectedObject;
+            kesButton.Refresh();
+        }
+
+        private void kExerciceButton1_Click(object sender, EventArgs e)
+        {
+            FChoice f = new FChoice(kesButton.Exercices.Exercices.ToArray(), "Select an Exercice");
+            f.ShowDialog();
+            if (f.SelectedObject != null) keButton.Exercice = (TExercice)f.SelectedObject;
+            keButton.Refresh();
+            LoadExercice();
+        }
+
+        private void btnNext_Click(object sender, EventArgs e)
+        {
+            TExercice[] exs = kesButton.Exercices.Exercices.ToArray();
+            Array.Sort(exs, TExerciceComparer.Default);
+            int i = Array.IndexOf(exs, keButton.Exercice);
+            i = (i + 1) % exs.Length;
+            keButton.Exercice = exs[i];
+            keButton.Refresh();
+            LoadExercice();
+        }
+
+        private void btnPrev_Click(object sender, EventArgs e)
+        {
+            TExercice[] exs = kesButton.Exercices.Exercices.ToArray();
+            Array.Sort(exs, TExerciceComparer.Default);
+            int i = Array.IndexOf(exs, keButton.Exercice);
+            i = (i - 1 + exs.Length) % exs.Length;
+            keButton.Exercice = exs[i];
+            keButton.Refresh();
+            LoadExercice();
         }
     }
 

@@ -57,16 +57,30 @@ namespace PianoGalon
                     float d2 = (float)(Width * 0.5 - radius - diameter * Math.Sqrt(2));
                     ImagePath.AddArc(radius, Height - diameter - radius, diameter, diameter, 45, 180);
                     ImagePath.AddArc(d2, d1, diameter, diameter, 45, -90);
-
                     ImagePath.AddArc(radius, radius, diameter, diameter, 135, 180);
                     ImagePath.AddArc(d1, d2, diameter, diameter, 135, -90);
-
                     ImagePath.AddArc(Width - diameter - radius, radius, diameter, diameter, 225, 180);
                     ImagePath.AddArc(Width - d2 - diameter, d1, diameter, diameter, 225, -90);
-
-
                     ImagePath.AddArc(Width - diameter - radius, Height - diameter - radius, diameter, diameter, 315, 180);
                     ImagePath.AddArc(d1, Height - d2 - diameter, diameter, diameter, 315, -90);
+                    break;
+                case EButtonType.Prev:
+                    ImagePath.AddArc(0.5f * Width - diameter, radius, diameter, diameter, 210, 150);
+                    ImagePath.AddArc(0.5f * Width, 0.5f * Height - radius - diameter, diameter, diameter, 180, -150);
+                    ImagePath.AddArc(Width - radius - diameter, radius, diameter, diameter, 210, 150);
+                    ImagePath.AddArc(Width - radius - diameter, Height - radius - diameter, diameter, diameter, 0, 150);
+                    ImagePath.AddArc(0.5f * Width, 0.5f * Height + radius, diameter, diameter, 330, -150);
+                    ImagePath.AddArc(0.5f * Width - diameter, Height - radius - diameter, diameter, diameter, 0, 150);
+                    ImagePath.AddArc(radius, 0.5f * Height - radius, diameter, diameter, 150, 60);
+                    break;
+                case EButtonType.Next:
+                    ImagePath.AddArc(0.5f * Width, Height - radius - diameter, diameter, diameter, 30, 150);
+                    ImagePath.AddArc(0.5f * Width - diameter, 0.5f * Height + radius, diameter, diameter, 0, -150);
+                    ImagePath.AddArc(radius, Height - radius - diameter, diameter, diameter, 30, 150);
+                    ImagePath.AddArc(radius, radius, diameter, diameter, 180, 150);
+                    ImagePath.AddArc(0.5f * Width - diameter, 0.5f * Height - radius - diameter, diameter, diameter, 150, -150);
+                    ImagePath.AddArc(0.5f * Width, radius, diameter, diameter, 180, 150);
+                    ImagePath.AddArc(Width - radius - diameter, 0.5f * Height - radius, diameter, diameter, 330, 60);
                     break;
             }
         }
@@ -81,7 +95,9 @@ namespace PianoGalon
         public enum EButtonType
         {
             Minimize,
-            Close
+            Close,
+            Next,
+            Prev
         }
 
     }

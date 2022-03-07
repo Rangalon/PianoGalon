@@ -48,6 +48,12 @@
     <Reference Include="System.Xml" />
   </ItemGroup>
   <ItemGroup>
+    <Compile Include="FChoice.cs">
+      <SubType>Form</SubType>
+    </Compile>
+    <Compile Include="FChoice.Designer.cs">
+      <DependentUpon>FChoice.cs</DependentUpon>
+    </Compile>
     <Compile Include="FPiano.cs">
       <SubType>Form</SubType>
     </Compile>
@@ -111,6 +117,9 @@
     <Compile Include="TLecons.cs" />
     <Compile Include="TPiano.cs" />
     <Compile Include="TProfil.cs" />
+    <EmbeddedResource Include="FChoice.resx">
+      <DependentUpon>FChoice.cs</DependentUpon>
+    </EmbeddedResource>
     <EmbeddedResource Include="FPiano.resx">
       <DependentUpon>FPiano.cs</DependentUpon>
     </EmbeddedResource>
