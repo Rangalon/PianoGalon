@@ -1,0 +1,15 @@
+C:\Users\to101757\Documents\TestPiano\WindowsFormsApp1\bin\Debug\Melanchall_DryWetMidi_Native32.dll
+C:\Users\to101757\Documents\TestPiano\WindowsFormsApp1\bin\Debug\Melanchall_DryWetMidi_Native64.dll
+C:\Users\to101757\Documents\TestPiano\WindowsFormsApp1\bin\Debug\Melanchall_DryWetMidi_Native64.dylib
+C:\Users\to101757\Documents\TestPiano\WindowsFormsApp1\bin\Debug\TestPiano.exe.config
+C:\Users\to101757\Documents\TestPiano\WindowsFormsApp1\bin\Debug\TestPiano.exe
+C:\Users\to101757\Documents\TestPiano\WindowsFormsApp1\bin\Debug\TestPiano.pdb
+C:\Users\to101757\Documents\TestPiano\WindowsFormsApp1\bin\Debug\Melanchall.DryWetMidi.dll
+C:\Users\to101757\Documents\TestPiano\WindowsFormsApp1\bin\Debug\Melanchall.DryWetMidi.xml
+C:\Users\to101757\Documents\TestPiano\WindowsFormsApp1\obj\Debug\TestPiano.csprojAssemblyReference.cache
+C:\Users\to101757\Documents\TestPiano\WindowsFormsApp1\obj\Debug\TestPiano.Properties.Resources.resources
+C:\Users\to101757\Documents\TestPiano\WindowsFormsApp1\obj\Debug\TestPiano.csproj.GenerateResource.cache
+C:\Users\to101757\Documents\TestPiano\WindowsFormsApp1\obj\Debug\TestPiano.csproj.CoreCompileInputs.cache
+C:\Users\to101757\Documents\TestPiano\WindowsFormsApp1\obj\Debug\TestPiano.csproj.CopyComplete
+C:\Users\to101757\Documents\TestPiano\WindowsFormsApp1\obj\Debug\TestPiano.exe
+C:\Users\to101757\Documents\TestPiano\WindowsFormsApp1\obj\Debug\TestPiano.pdb
