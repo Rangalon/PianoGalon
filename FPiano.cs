@@ -49,13 +49,24 @@ namespace PianoGalon
                     }
                     break;
                 case EPlayMode.Escalators:
-
+                    {
+                        TChordTarget ct = ChordTargets.FirstOrDefault(o => o.Number == e.Number && o.EventType == e.EventType && Math.Abs(o.Date - CurrentDate) < TimeTolerance);
+                        if (ct != null)
+                        {
+                            ct.Done = true;
+                            //
+                            if (ct.EventType == EChordEventType.Pressed) NotesQty--;
+                            GoodEvents++;
+                        }
+                        else
+                            BadEvents++;
+                    }
                     break;
             }
 
         }
 
-
+        static double TimeTolerance = 0.2;
 
         Pen BigBlackPen = new Pen(Color.Black, 3);
 
@@ -69,6 +80,7 @@ namespace PianoGalon
             th = new Thread(DoerDrawPiano); th.Start();
             th = new Thread(DoerDrawMusicScore); th.Start();
             th = new Thread(DoerComputeMusicScore); th.Start();
+            th = new Thread(DoerDate); th.Start();
             foreach (Control c in tableLayoutPanel1.Controls)
             {
                 c.KeyDown += Ke_KeyDown;
@@ -257,7 +269,7 @@ namespace PianoGalon
                         {
                             grp.FillPath(Brushes.White, key.Path);
                             grp.DrawPath(WhiteBorderPen, key.Path);
-                        }                      
+                        }
                         grp.DrawString(key.Name, KLabel.Ft, Brushes.Black, key.MinX, 50);
 
                     }
@@ -276,7 +288,7 @@ namespace PianoGalon
                         {
                             grp.FillPath(Brushes.Black, key.Path);
                             grp.DrawPath(WhiteBorderPen, key.Path);
-                        } 
+                        }
                     }
                     grp.Dispose();
                 }
@@ -353,8 +365,12 @@ namespace PianoGalon
         int BadEvents = 0;
         int GoodEvents = 0;
 
+        static double TimeRatio = 0.5;
+
         void ResetExercice()
         {
+            DtStart = DateTime.Now.AddSeconds(5 * TimeRatio);
+            DtStart.AddSeconds(-5);
             switch (PlayMode)
             {
                 case EPlayMode.Stairs:
@@ -372,7 +388,7 @@ namespace PianoGalon
             foreach (TChordTarget ct in ChordTargets) ct.Done = false;
         }
 
-
+        DateTime DtStart;
 
         private void tmrSave_Tick(object sender, EventArgs e)
         {
@@ -506,7 +522,30 @@ namespace PianoGalon
                 ResetExercice();
             }
             else if (RecPlay.Contains(e.X, e.Y))
+            {
                 ResetExercice();
+            }
+        }
+
+        void DoerDate()
+        {
+            while (DoerDrawEnabled)
+            {
+                switch (PlayMode)
+                {
+                    case EPlayMode.Escalators:
+                        CurrentDate = (float)(TimeRatio * 0.001 * (DateTime.Now - DtStart).TotalMilliseconds);
+                        foreach (TChordTarget ct in ChordTargets.Where(o => !o.Done && CurrentDate - o.Date > TimeTolerance))
+                        {
+                            BadEvents++;
+                            if (ct.EventType == EChordEventType.Pressed)
+                                NotesQty--;
+                            ct.Done = true;
+                        }
+                        break;
+                }
+                Thread.Sleep(10);
+            }
         }
 
         EPlayMode[] Pms = (EPlayMode[])Enum.GetValues(typeof(EPlayMode));
