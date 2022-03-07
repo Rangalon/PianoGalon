@@ -29,9 +29,19 @@ namespace PianoGalon
         [XmlAttribute]
         public string Name { get; set; }
 
+        [XmlAttribute("ET")]
+        public EExerciceType ExerciceType { get; set; } = EExerciceType.Standard;
+
         public override string ToString()
         {
             return string.Format("{0}: {1}", Rank, Name);
+        }
+
+        public enum EExerciceType
+        {
+            Standard,
+            RightLeft,
+            RightLeftBoth
         }
 
         internal void ImportMuse(string fileName)
@@ -122,10 +132,26 @@ namespace PianoGalon
         [XmlArray("Chds")]
         [XmlArrayItem("Chd")]
         public TChord[] Chords = { };
-        public void ComputePaths(TPiano piano, List<GraphicsPath> wlst, List<GraphicsPath> blst, List<TChordTarget> ChordTargets)
+        public void ComputePaths(TPiano piano, List<TChordTarget> ChordTargets)
         {
             foreach (TChord chd in Chords)
-                chd.ComputePaths(piano, wlst, blst, ChordTargets);
+                chd.ComputePaths(piano, ChordTargets);
+            float total = ChordTargets.Max(o => o.Date + o.Duration);
+            switch (ExerciceType)
+            {
+                case EExerciceType.RightLeft:
+                    foreach (TChordTarget cto in ChordTargets.ToArray())
+                        ChordTargets.Add(cto.Clone(-12, total, piano));
+                    break;
+                case EExerciceType.RightLeftBoth:
+                    foreach (TChordTarget cto in ChordTargets.ToArray())
+                    {
+                        ChordTargets.Add(cto.Clone(-12, total, piano));
+                        ChordTargets.Add(cto.Clone(0, total * 2, piano));
+                        ChordTargets.Add(cto.Clone(-12, total * 2, piano));
+                    }
+                    break;
+            }
         }
 
         internal void ImportMidi(string fileName)

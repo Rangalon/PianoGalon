@@ -33,7 +33,7 @@ namespace PianoGalon
             {
                 case EPlayMode.Stairs:
                     {
-                        TChordTarget ct = ChordTargets.FirstOrDefault(o => o.Number == e.Number && o.EventType == e.EventType && o.Date >= CurrentDate && o.Date - CurrentDate < 0.1f);
+                        TChordTarget ct = ChordTargets.FirstOrDefault(o => o.Key.Number == e.Number && o.EventType == e.EventType && o.Date >= CurrentDate && o.Date - CurrentDate < 0.1f);
 
                         if (ct != null)
                         {
@@ -50,7 +50,7 @@ namespace PianoGalon
                     break;
                 case EPlayMode.Escalators:
                     {
-                        TChordTarget ct = ChordTargets.FirstOrDefault(o => o.Number == e.Number && o.EventType == e.EventType && Math.Abs(o.Date - CurrentDate) < TimeTolerance);
+                        TChordTarget ct = ChordTargets.FirstOrDefault(o => o.Key.Number == e.Number && o.EventType == e.EventType && Math.Abs(o.Date - CurrentDate) < TimeTolerance);
                         if (ct != null)
                         {
                             ct.Done = true;
@@ -162,14 +162,10 @@ namespace PianoGalon
                         }
 
                         grp.TranslateTransform(0, -CurrentDate * TChord.DurationRatio);
-                        foreach (GraphicsPath path in WhitePaths)
-                            grp.FillPath(Brushes.White, path);
-                        foreach (GraphicsPath path in BlackPaths)
-                            grp.FillPath(Brushes.Black, path);
-                        foreach (TChordTarget ct in ChordTargets.Where(o => o.EventType == EChordEventType.Pressed))
-                            grp.FillEllipse(Brushes.DarkBlue, ct.Rec);
-                        foreach (TChordTarget ct in ChordTargets.Where(o => o.EventType == EChordEventType.Released))
-                            grp.FillEllipse(Brushes.DarkGoldenrod, ct.Rec);
+                        foreach (TChordTarget ct in WhiteTargets)
+                            grp.FillRectangle(Brushes.White, ct.Rec);
+                        foreach (TChordTarget ct in BlackTargets)
+                            grp.FillRectangle(Brushes.Black, ct.Rec);
 
                     }
                     //
@@ -405,8 +401,8 @@ namespace PianoGalon
 
 
 
-        GraphicsPath[] WhitePaths = { };
-        GraphicsPath[] BlackPaths = { };
+        TChordTarget[] WhiteTargets = { };
+        TChordTarget[] BlackTargets = { };
         TChordTarget[] ChordTargets = { };
 
 
@@ -435,14 +431,17 @@ namespace PianoGalon
 
         void LoadExercice()
         {
-            List<GraphicsPath> wlst = new List<GraphicsPath>();
-            List<GraphicsPath> blst = new List<GraphicsPath>();
             List<TChordTarget> ctlst = new List<TChordTarget>();
-            keButton.Exercice.ComputePaths(Piano, wlst, blst, ctlst);
-            WhitePaths = wlst.ToArray();
-            BlackPaths = blst.ToArray();
+            keButton.Exercice.ComputePaths(Piano, ctlst);
             ctlst.Sort(TChordTargetComparer.Default);
             ChordTargets = ctlst.ToArray();
+            WhiteTargets = ChordTargets.Where(o => !o.Key.Black && o.EventType == EChordEventType.Pressed).ToArray();
+            BlackTargets = ChordTargets.Where(o => o.Key.Black && o.EventType == EChordEventType.Pressed).ToArray();
+            foreach (TChordTarget ct in ChordTargets.Where(o => o.EventType == EChordEventType.Pressed))
+            {
+                RectangleF r = new RectangleF(ct.Key.MinX, TChord.DurationRatio * ct.Date, ct.Key.DeltaX, TChord.DurationRatio * ct.Duration);
+                ct.Rec = r;
+            }
             ResetExercice();
         }
 

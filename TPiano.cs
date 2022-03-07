@@ -56,6 +56,8 @@ namespace PianoGalon
             public float MinX;
             public float MaxX;
 
+            public float DeltaX;
+
             static float radius = 5;
             static float diameter = radius * 2;
 
@@ -125,6 +127,7 @@ namespace PianoGalon
 
                 MinX = 5 * start;
                 MaxX = 5 * (start + w);
+                DeltaX = MaxX - MinX;
 
                 Pnts = new PointF[] {
                     new PointF(start,0),
