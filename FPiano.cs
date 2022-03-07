@@ -41,11 +41,15 @@ namespace PianoGalon
                             //
                             if (ct.EventType == EChordEventType.Pressed) NotesQty--;
                             ct = ChordTargets.FirstOrDefault(o => !o.Done);
+                            PlayerEvents.Add(new TPlayerEvent() { Date = CurrentDate, Good = true, Number = e.Number });
                             if (ct != null) CurrentDate = ct.Date;
                             GoodEvents++;
                         }
                         else
+                        {
                             BadEvents++;
+                            PlayerEvents.Add(new TPlayerEvent() { Date = CurrentDate, Good = false, Number = e.Number });
+                        }
                     }
                     break;
                 case EPlayMode.Escalators:
@@ -57,9 +61,13 @@ namespace PianoGalon
                             //
                             if (ct.EventType == EChordEventType.Pressed) NotesQty--;
                             GoodEvents++;
+                            PlayerEvents.Add(new TPlayerEvent() { Date = CurrentDate, Good = true, Number = e.Number });
                         }
                         else
+                        {
                             BadEvents++;
+                            PlayerEvents.Add(new TPlayerEvent() { Date = CurrentDate, Good = false, Number = e.Number });
+                        }
                     }
                     break;
             }
@@ -68,7 +76,6 @@ namespace PianoGalon
 
         static double TimeTolerance = 0.2;
 
-        Pen BigBlackPen = new Pen(Color.Black, 3);
 
         bool DoerDrawEnabled = true;
 
@@ -79,6 +86,7 @@ namespace PianoGalon
             Thread th;
             th = new Thread(DoerDrawPiano); th.Start();
             th = new Thread(DoerDrawMusicScore); th.Start();
+            th = new Thread(DoerDrawResults); th.Start();
             th = new Thread(DoerComputeMusicScore); th.Start();
             th = new Thread(DoerDate); th.Start();
             foreach (Control c in tableLayoutPanel1.Controls)
@@ -161,12 +169,17 @@ namespace PianoGalon
                             grp.DrawLine(BackPen, key.MaxX, 0, key.MaxX, sz.Height);
                         }
 
-                        grp.TranslateTransform(0, -CurrentDate * TChord.DurationRatio);
+                        grp.TranslateTransform(0, -CurrentDate * TChord.DurationRatio * 0.5f);
                         foreach (TChordTarget ct in WhiteTargets)
-                            grp.FillRectangle(Brushes.White, ct.Rec);
+                        {
+                            grp.FillPath(Brushes.White, ct.Path);
+                            grp.DrawPath(BlackBorderPen, ct.Path);
+                        }
                         foreach (TChordTarget ct in BlackTargets)
-                            grp.FillRectangle(Brushes.Black, ct.Rec);
-
+                        {
+                            grp.FillPath(Brushes.Black, ct.Path);
+                            grp.DrawPath(WhiteBorderPen, ct.Path);
+                        }
                     }
                     //
                     if (keButton.Exercice != null && kpButton.Profil != null)
@@ -186,7 +199,7 @@ namespace PianoGalon
                                 break;
                         }
                         //
-                        s = string.Format("Notes: {0}", NotesQty);
+                        s = string.Format("Time: {1}:{2:00}.{3:000}\n\nNotes: {0}", NotesQty, (int)(CurrentDate / 60), (int)(CurrentDate % 60), 1000 * (CurrentDate % 1));
                         grp.TranslateTransform(1, 1); grp.DrawString(s, KButton.Ft, Brushes.Black, RecNotes, KButton.StrCC);
                         grp.TranslateTransform(-1, -1); grp.DrawString(s, KButton.Ft, Brushes.LightGray, RecNotes, KButton.StrCC);
                         //
@@ -209,7 +222,76 @@ namespace PianoGalon
             }
         }
 
+        private void DoerDrawResults()
+        {
+            Action refresher = new Action(pbResults.Refresh);
+            Bitmap bmp;
+            Graphics grp;
+            TChordTarget[] cts = { };
+            TPlayerEvent[] evts = { };
+            float xr;
+            float xm;
+            Size sz = pbResults.Size;
 
+            if (pbResults.BackgroundImage == null)
+                pbResults.BackgroundImage = new Bitmap(sz.Width, sz.Height);
+
+            while (DoerDrawEnabled)
+            {
+
+                try
+                {
+                    grp = Graphics.FromImage(pbResults.BackgroundImage);
+                }
+                catch { grp = null; }
+
+                if (grp != null)
+                {
+
+                    grp.SmoothingMode = SmoothingMode.AntiAlias;
+
+                    try
+                    {
+                        cts = ChordTargets.ToArray();
+                        evts = PlayerEvents.ToArray();
+                    }
+                    catch { }
+
+                    grp.Clear(Color.Black);
+
+                    if (cts.Length > 0)
+                    {
+                        xm = cts.Min(o => o.Date);
+                        xr = (float)(pbResults.Width - 10) / (cts.Max(o => o.Date) - xm);
+                        //
+                        grp.FillRectangle(BckResultsBrs, 0, 0, 5 + xr * CurrentDate, sz.Height);
+                        //
+                        foreach (TChordTarget ct in cts)
+                            grp.FillEllipse(NeutralBrs, 5 + (ct.Date - xm) * xr, ct.Key.Number * 0.5f, xr * ct.Duration, 7);
+                        foreach (TPlayerEvent ct in evts.Where(o => o.Good))
+                            grp.FillEllipse(GoodBrs, 5 + (ct.Date - xm) * xr, ct.Number * 0.5f, 7, 7);
+                        foreach (TPlayerEvent ct in evts.Where(o => !o.Good))
+                            grp.FillEllipse(BadBrs, 5 + (ct.Date - xm) * xr, ct.Number * 0.5f, 7, 7);
+                    }
+
+
+                    grp.Dispose();
+                }
+
+                try
+                {
+                    Invoke(refresher);
+                }
+                catch { }
+                Thread.Sleep(20);
+            }
+        }
+
+        SolidBrush BckResultsBrs = new SolidBrush(Color.FromArgb(32, 32, 32));
+
+        SolidBrush NeutralBrs = new SolidBrush(Color.FromArgb(64, 64, 64));
+        SolidBrush GoodBrs = new SolidBrush(Color.FromArgb(64, 192, 64));
+        SolidBrush BadBrs = new SolidBrush(Color.FromArgb(192, 64, 64));
 
         private void DoerDrawPiano()
         {
@@ -298,6 +380,8 @@ namespace PianoGalon
             }
         }
 
+        List<TPlayerEvent> PlayerEvents = new List<TPlayerEvent>();
+
         static Brush PressedShadowBrush;
 
         float xratio = 1;
@@ -332,12 +416,17 @@ namespace PianoGalon
         {
             switch (keyValue)
             {
+                case 68: return 55;
+                case 70: return 57;
+                case 71: return 59;
                 case 72: return 60;
                 case 85: return 61;
                 case 74: return 62;
                 case 75: return 64;
                 case 76: return 65;
                 case 77: return 67;
+                case 192: return 69;
+                case 220: return 71;
                 default: return 0;
             }
         }
@@ -361,25 +450,24 @@ namespace PianoGalon
         int BadEvents = 0;
         int GoodEvents = 0;
 
-        static double TimeRatio = 0.5;
+        static double TimeRatio = 1;
 
         void ResetExercice()
         {
-            DtStart = DateTime.Now.AddSeconds(5 * TimeRatio);
-            DtStart.AddSeconds(-5);
             switch (PlayMode)
             {
                 case EPlayMode.Stairs:
-                    CurrentDate = 0;
+                    CurrentDate = ChordTargets.Min(o => o.Date);
                     break;
                 case EPlayMode.Escalators:
-                    CurrentDate = -5;
+                    DtStart = DateTime.Now.AddSeconds(5 * TimeRatio);
                     break;
             }
             //
             NotesQty = ChordTargets.Count(o => o.EventType == EChordEventType.Pressed);
             BadEvents = 0;
             GoodEvents = 0;
+            PlayerEvents.Clear();
             //
             foreach (TChordTarget ct in ChordTargets) ct.Done = false;
         }
@@ -439,8 +527,16 @@ namespace PianoGalon
             BlackTargets = ChordTargets.Where(o => o.Key.Black && o.EventType == EChordEventType.Pressed).ToArray();
             foreach (TChordTarget ct in ChordTargets.Where(o => o.EventType == EChordEventType.Pressed))
             {
-                RectangleF r = new RectangleF(ct.Key.MinX, TChord.DurationRatio * ct.Date, ct.Key.DeltaX, TChord.DurationRatio * ct.Duration);
+                RectangleF r = new RectangleF(ct.Key.MinX, TChord.DurationRatio * ct.Date * 0.5f, ct.Key.DeltaX, TChord.DurationRatio * ct.Duration * 0.5f);
+                //
+                GraphicsPath Path = new GraphicsPath();
+                Path.AddArc(new RectangleF(r.X + r.Width - (2 + KButton.diameter), r.Y + 2, KButton.diameter, KButton.diameter), 270, 90);
+                Path.AddArc(new RectangleF(r.X + r.Width - (2 + KButton.diameter), r.Y + r.Height - (2 + KButton.diameter), KButton.diameter, KButton.diameter), 0, 90);
+                Path.AddArc(new RectangleF(r.X + 2, r.Y + r.Height - (2 + KButton.diameter), KButton.diameter, KButton.diameter), 90, 90);
+                Path.AddArc(new RectangleF(r.X + 2, r.Y + 2, KButton.diameter, KButton.diameter), 180, 90);
+                //
                 ct.Rec = r;
+                ct.Path = Path;
             }
             ResetExercice();
         }
@@ -539,6 +635,7 @@ namespace PianoGalon
                             BadEvents++;
                             if (ct.EventType == EChordEventType.Pressed)
                                 NotesQty--;
+                            PlayerEvents.Add(new TPlayerEvent() { Number = ct.Key.Number, Date = ct.Date, Good = false });
                             ct.Done = true;
                         }
                         break;

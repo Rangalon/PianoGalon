@@ -136,7 +136,7 @@ namespace PianoGalon
         {
             foreach (TChord chd in Chords)
                 chd.ComputePaths(piano, ChordTargets);
-            float total = ChordTargets.Max(o => o.Date + o.Duration);
+            float total = ChordTargets.Max(o => o.Date + o.Duration) + Gap;
             switch (ExerciceType)
             {
                 case EExerciceType.RightLeft:

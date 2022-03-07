@@ -116,6 +116,7 @@
     <Compile Include="TExercices.cs" />
     <Compile Include="TLecons.cs" />
     <Compile Include="TPiano.cs" />
+    <Compile Include="TPlayerEvent.cs" />
     <Compile Include="TProfil.cs" />
     <EmbeddedResource Include="FChoice.resx">
       <DependentUpon>FChoice.cs</DependentUpon>

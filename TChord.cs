@@ -33,12 +33,12 @@ namespace PianoGalon
                 TChordTarget ct;
                 ct = new TChordTarget();
                 ct.Key = key;
-                ct.Date = Start; ct.Duration = Duration;
+                ct.Date = Start * 2; ct.Duration = Duration * 2;
                 ct.EventType = EChordEventType.Pressed;
                 ChordTargets.Add(ct);
                 ct = new TChordTarget();
                 ct.Key = key;
-                ct.Date = Start + Duration;
+                ct.Date = (Start + Duration) * 2;
                 ct.EventType = EChordEventType.Released;
                 ChordTargets.Add(ct);
             }
@@ -63,6 +63,7 @@ namespace PianoGalon
         public bool Done;
         public TKey Key;
         internal RectangleF Rec;
+        internal GraphicsPath Path;
 
         internal TChordTarget Clone(int v, float d, TPiano piano)
         {
