@@ -4,8 +4,7 @@ using MidiGalon.MidiInput;
 using System;
 using System.Drawing;
 using System.Linq;
-using System.Threading;
-using static MidiGalon.MidiInput.WinMM;
+using System.Threading; 
 
 namespace PianoGalon
 {
@@ -14,21 +13,7 @@ namespace PianoGalon
         //InputDevice device;
         WinMMMidiInput input;
 
-        void InitThreaded()
-        {
-            WinMMMidiAccess ima = (WinMMMidiAccess)MidiAccessManager.Default;
-            WinMMPortDetails mpd = (WinMMPortDetails)ima.Inputs.First();
-
-            //  Thread.Sleep(1000);
-
-            input = (WinMMMidiInput)ima.OpenInputAsync(mpd.Id).Result;
-
-            //    Thread.Sleep(1000);
-            input.MessageReceived += Input_MessageReceived;
-
-            //     Thread.Sleep(6000);
-        }
-
+        
 
         public TPiano()
         {
@@ -39,7 +24,20 @@ namespace PianoGalon
             Max = Keys.Where(o => o != null).Max(o => o.Max);
             Min = Keys.Where(o => o != null).Min(o => o.Min);
 
-            Thread th = new Thread(InitThreaded); th.Start();
+            WinMMMidiAccess ima = (WinMMMidiAccess)MidiAccessManager.Default;
+            if (ima.Inputs.Count() > 0)
+            {
+                WinMMPortDetails mpd = (WinMMPortDetails)ima.Inputs.First();
+
+                //  Thread.Sleep(1000);
+
+                input = (WinMMMidiInput)ima.OpenInputAsync(mpd.Id).Result;
+
+                //    Thread.Sleep(1000);
+                input.MessageReceived += Input_MessageReceived;
+            }
+
+          //  Thread th = new Thread(InitThreaded); th.Start();
 
         }
 
@@ -57,9 +55,10 @@ namespace PianoGalon
                 }
                 pe.Number = e.Data[1];
                 Keys[pe.Number].Velocity = e.Data[2];
-                string s = "";
-                foreach (byte b in e.Data) s += b.ToString() + " ";
-                Console.WriteLine(string.Format("{0} {1} {2}", s, e.Length, e.Timestamp));
+                KeyEvent?.Invoke(pe);
+                //string s = "";
+                //foreach (byte b in e.Data) s += b.ToString() + " ";
+                //Console.WriteLine(string.Format("{0} {1} {2}", s, e.Length, e.Timestamp));
             }
         }
 

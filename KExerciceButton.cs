@@ -1,5 +1,6 @@
 ﻿using System.Drawing;
 using System.Drawing.Drawing2D;
+using System.Linq;
 using System.Windows.Forms;
 
 namespace PianoGalon
@@ -42,6 +43,26 @@ namespace PianoGalon
                 pevent.Graphics.DrawString("Select an Exercice", Ft, Brushes.LightGray, TextRectangle, StrCC);
             }
             if (HasMouse) pevent.Graphics.FillPath(BorderPen.Brush, Path);
+
+            if (exercice != null && TProfil.CurrentProfil != null  )
+            {
+                TScore s = TProfil.CurrentProfil.Scores.FirstOrDefault(o => o.ExerciceId == exercice.Id);
+                if (s != null)
+                {
+                    for (int i = 0; i < 5 && s.StairsMode >= TScore.Ranges[i]; i++)
+                    {
+                        GraphicsPath p = TProfil.StairsPaths[i];
+                        pevent.Graphics.FillPath(Brushes.Silver, p);
+                        pevent.Graphics.DrawPath(KButton.BorderPen, p);
+                    }
+                    for (int i = 0; i < 5 && s.EscalatorsMode >= TScore.Ranges[i]; i++)
+                    {
+                        GraphicsPath p = TProfil.EscalatorsPaths[i];
+                        pevent.Graphics.FillPath(Brushes.Gold, p);
+                        pevent.Graphics.DrawPath(KButton.BorderPen, p);
+                    }
+                }
+            }
         }
 
         public KExerciceButton()

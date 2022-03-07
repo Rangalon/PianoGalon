@@ -22,10 +22,10 @@ namespace PianoGalon
     public class TExercice
     {
         [XmlAttribute]
-        public UInt32 Id { get; set; } = TLecons.GetId();
+        public uint Id { get; set; } = TLecons.GetId();
 
         [XmlAttribute]
-        public UInt32 Rank { get; set; }
+        public uint Rank { get; set; }
 
         [XmlAttribute]
         public string Name { get; set; }

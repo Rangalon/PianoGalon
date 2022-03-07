@@ -32,11 +32,12 @@ namespace PianoGalon
 
         private void Piano_KeyEvent(TPianoEvent e)
         {
+            //if (ChordTargets.Count(o => !o.Done) == 0) return;
             switch (PlayMode)
             {
                 case EPlayMode.Stairs:
                     {
-                        TChordTarget ct = ChordTargets.FirstOrDefault(o => o.Key.Number == e.Number && o.EventType == e.EventType && o.Date >= CurrentDate && o.Date - CurrentDate < 0.1f);
+                        TChordTarget ct = ChordTargets.FirstOrDefault(o => o.Key.Number == e.Number && o.EventType == e.EventType && Math.Abs(o.Date - CurrentDate) < TimeTolerance);
 
                         if (ct != null)
                         {
@@ -83,7 +84,7 @@ namespace PianoGalon
         float Score;
 
 
-        static double TimeTolerance = 0.2;
+        static double TimeTolerance = 0.3;
 
 
         bool DoerDrawEnabled = true;
@@ -143,6 +144,8 @@ namespace PianoGalon
             Bitmap bmp;
             Graphics grp;
             Size sz;
+            Pen WhiteBorderPen = (Pen)WhiteBorderPenForAll.Clone();
+            Pen BlackBorderPen = (Pen)BlackBorderPenForAll.Clone();
             while (DoerDrawEnabled)
             {
                 sz = pbMusicScore.Size;
@@ -305,6 +308,8 @@ namespace PianoGalon
             Action refresher = new Action(pbPiano.Refresh);
             Bitmap bmp;
             Graphics grp;
+
+            Pen WhiteBorderPen = (Pen)WhiteBorderPenForAll.Clone();
             while (DoerDrawEnabled)
             {
 
@@ -393,8 +398,8 @@ namespace PianoGalon
 
         float xratio = 1;
 
-        static Pen WhiteBorderPen = new Pen(Color.FromArgb(64, 0, 0, 0), 4);
-        static Pen BlackBorderPen = new Pen(Color.FromArgb(64, 255, 255, 255), 4);
+        static Pen WhiteBorderPenForAll = new Pen(Color.FromArgb(64, 0, 0, 0), 4);
+        static Pen BlackBorderPenForAll = new Pen(Color.FromArgb(64, 255, 255, 255), 4);
 
         void InitGrp(Graphics grp, float xr, float yr)
         {
@@ -649,6 +654,25 @@ namespace PianoGalon
                         }
                         break;
                 }
+                if (kpButton.Profil != null && keButton.Exercice != null && ChordTargets.Count(o => !o.Done) == 0)
+                {
+                    TScore score = kpButton.Profil.Scores.FirstOrDefault(o => o.ExerciceId == keButton.Exercice.Id);
+                    if (score == null)
+                    {
+                        score = new TScore() { ExerciceId = keButton.Exercice.Id };
+                        kpButton.Profil.Scores.Add(score);
+                    }
+                    switch (PlayMode)
+                    {
+                        case EPlayMode.Escalators:
+                            if (score.EscalatorsMode < Score) { score.EscalatorsMode = Score; TProfil.Save(); }
+                            break;
+                        case EPlayMode.Stairs:
+                            if (score.StairsMode < Score) { score.StairsMode = Score; TProfil.Save(); }
+                            break;
+                    }
+                }
+
                 Thread.Sleep(10);
             }
         }
@@ -671,7 +695,11 @@ namespace PianoGalon
         {
             FChoice f = new FChoice(TProfil.Profils.ToArray(), "Select your Profile");
             f.ShowDialog();
-            if (f.SelectedObject != null) kpButton.Profil = (TProfil)f.SelectedObject;
+            if (f.SelectedObject != null)
+            {
+                kpButton.Profil = (TProfil)f.SelectedObject;
+                TProfil.CurrentProfil = kpButton.Profil;
+            }
             kpButton.Refresh();
         }
 
