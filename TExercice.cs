@@ -127,7 +127,7 @@ namespace PianoGalon
             mfile.Regularize();
             List<TChord> chds = new List<TChord>();
             foreach (TMidiTrack mtrk in mfile.Tracks)
-                foreach (TMidiChannel mchn in mtrk.Channels)
+                foreach (TMidiChannel mchn in mtrk.Channels.Where(o=>o!=null))
                     while (mchn.Events.Count > 0)
                     {
                         TMidiEvent e1 = mchn.Events[0]; mchn.Events.RemoveAt(0);

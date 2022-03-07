@@ -1,10 +1,6 @@
-﻿using System;
-using System.Collections.Generic;
+﻿using System.Collections.Generic;
 using System.Drawing;
 using System.Drawing.Drawing2D;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
 using System.Xml.Serialization;
 
 namespace PianoGalon
@@ -25,7 +21,7 @@ namespace PianoGalon
             return Start.ToString() + " " + Duration.ToString() + Notes.Length.ToString();
         }
 
-        public static float DurationRatio = 250f;
+        public static float DurationRatio = 150f;
 
         internal void ComputePaths(TPiano piano, List<GraphicsPath> wlst, List<GraphicsPath> blst, List<TChordTarget> ChordTargets)
         {

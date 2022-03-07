@@ -27,12 +27,20 @@ namespace PianoGalon
 
         private void Piano_KeyEvent(TPianoEvent e)
         {
-            TChordTarget ct = ChordTargets.FirstOrDefault(o => o.Number == e.Number && o.EventType == e.EventType && o.Date >= CurrentTarget.Date && o.Date - CurrentTarget.Date < 0.1f);
-
-            if (ct != null)
+            if (CurrentTarget != null)
             {
-                ct.Done = true;
-                CurrentTarget = ChordTargets.First(o => !o.Done);
+                TChordTarget ct = ChordTargets.FirstOrDefault(o => o.Number == e.Number && o.EventType == e.EventType && o.Date >= CurrentTarget.Date && o.Date - CurrentTarget.Date < 0.1f);
+
+                if (ct != null)
+                {
+                    ct.Done = true;
+                    CurrentTarget = ChordTargets.FirstOrDefault(o => !o.Done);
+                    //
+                    if (ct.EventType == EChordEventType.Pressed) NotesQty--;
+                    GoodEvents++;
+                }
+                else
+                    BadEvents++;
             }
         }
 
@@ -42,6 +50,8 @@ namespace PianoGalon
 
         bool DoerDrawEnabled = true;
 
+        Rectangle RecPlay;
+
         private void Form1_Load(object sender, EventArgs e)
         {
             UpdateProfils();
@@ -49,7 +59,40 @@ namespace PianoGalon
             Thread th;
             th = new Thread(DoerDrawPiano); th.Start();
             th = new Thread(DoerDrawMusicScore); th.Start();
+            th = new Thread(DoerComputeMusicScore); th.Start();
         }
+
+        private void DoerComputeMusicScore()
+        {
+            Size sz;
+            while (DoerDrawEnabled)
+            {
+                sz = pbMusicScore.Size;
+                RecPlayMode = new Rectangle(
+                        sz.Width - Properties.Resources.Stairs.Width,
+                        0,
+                        Properties.Resources.Escalators.Width,
+                        Properties.Resources.Escalators.Height);
+
+                RecPlay = new Rectangle(
+                   (int)(0.5 * (sz.Width - Properties.Resources.Play.Width)),
+                    0,
+                    Properties.Resources.Play.Width,
+                    Properties.Resources.Play.Height);
+
+                RecNotes = RecPlay;
+                RecNotes.Width *= 2;
+                RecNotes.X -= RecNotes.Width;
+                RecScore = RecPlay;
+                RecScore.X += RecScore.Width;
+                RecScore.Width *= 2;
+                Thread.Sleep(100);
+            }
+        }
+
+        Rectangle RecNotes;
+        Rectangle RecScore;
+
         private void DoerDrawMusicScore()
         {
             Action refresher = new Action(pbMusicScore.Refresh);
@@ -110,8 +153,30 @@ namespace PianoGalon
                     {
                         grp.ResetTransform();
                         string s = string.Format("{2}\n{0}\n\t{1}", CurrentExercices.Name, CurrentExercice.Name, CurrentProfil.Name);
-                        grp.TranslateTransform(1, 1); grp.DrawString(s, KLabel.Ft, Brushes.Black, 0, 0);
-                        grp.TranslateTransform(-1, -1); grp.DrawString(s, KLabel.Ft, Brushes.LightGray, 0, 0);
+                        grp.TranslateTransform(1, 1); grp.DrawString(s, KButton.Ft, Brushes.Black, 0, 0);
+                        grp.TranslateTransform(-1, -1); grp.DrawString(s, KButton.Ft, Brushes.LightGray, 0, 0);
+                        //
+                        grp.DrawImage(Properties.Resources.Play, RecPlay);
+                        //
+                        switch (PlayMode)
+                        {
+                            case EPlayMode.Escalators:
+                                grp.DrawImage(Properties.Resources.Escalators, RecPlayMode);
+                                break;
+                            case EPlayMode.Stairs:
+                                grp.DrawImage(Properties.Resources.Stairs, RecPlayMode);
+                                break;
+                        }
+                        //
+                        s = string.Format("Notes: {0}", NotesQty);
+                        grp.TranslateTransform(1, 1); grp.DrawString(s, KButton .Ft, Brushes.Black, RecNotes, KButton.StrCC);
+                        grp.TranslateTransform(-1, -1); grp.DrawString(s, KButton.Ft, Brushes.LightGray, RecNotes, KButton.StrCC);
+                        //
+                        int r = GoodEvents + BadEvents;
+                        if (r > 0) r = (100 * GoodEvents) / r;
+                        s = string.Format("Good: {0}\nBad : {1}\nScore: {2}%", GoodEvents, BadEvents, r);
+                        grp.TranslateTransform(1, 1); grp.DrawString(s, KButton.Ft, Brushes.Black, RecScore, KButton.StrCC);
+                        grp.TranslateTransform(-1, -1); grp.DrawString(s, KButton.Ft, Brushes.LightGray, RecScore, KButton.StrCC);
                     }
                     //
                     grp.Dispose();
@@ -127,7 +192,7 @@ namespace PianoGalon
         }
 
 
-   
+
         private void DoerDrawPiano()
         {
             Action refresher = new Action(pbPiano.Refresh);
@@ -166,7 +231,7 @@ namespace PianoGalon
                         if (key.Velocity > 0)
                             grp.FillPath(PressedBrs, key.Path);
                         grp.DrawPath(WhiteBorderPen, key.Path);
-                        grp.DrawString(key.Name, KLabel .Ft, Brushes.Black, key.MinX, 50);
+                        grp.DrawString(key.Name, KLabel.Ft, Brushes.Black, key.MinX, 50);
                     }
                     foreach (TPiano.TKey key in Piano.Keys.Where(o => o != null && o.Pnts != null && o.Black))
                     {
@@ -290,10 +355,33 @@ namespace PianoGalon
                     flpExercice.Controls.Add(ke);
                     ke.Margin = new Padding(1);
                     ke.Click += Ke_Click;
+                    ke.KeyUp += Ke_KeyUp;
+                    ke.KeyDown += Ke_KeyDown;
                 }
             }
 
 
+        }
+
+        private void Ke_KeyDown(object sender, KeyEventArgs e)
+        {
+            Piano_KeyEvent(new TPianoEvent() { EventType = EChordEventType.Pressed, Number = GetPianoKey(e.KeyValue) });
+        }
+
+        private int GetPianoKey(int keyValue)
+        {
+            switch (keyValue)
+            {
+                case 72: return 60;
+                case 75: return 64;
+                case 77: return 67;
+                default: return 0;
+            }
+        }
+
+        private void Ke_KeyUp(object sender, KeyEventArgs e)
+        {
+            Piano_KeyEvent(new TPianoEvent() { EventType = EChordEventType.Released, Number = GetPianoKey(e.KeyValue) });
         }
 
         private void Ke_Click(object sender, EventArgs e)
@@ -312,10 +400,25 @@ namespace PianoGalon
             BlackPaths = blst.ToArray();
             ctlst.Sort(TChordTargetComparer.Default);
             ChordTargets = ctlst.ToArray();
+            ResetExercice();
+        }
+
+        int NotesQty;
+        int BadEvents = 0;
+        int GoodEvents = 0;
+
+        void ResetExercice()
+        {
             if (ChordTargets.Length > 0)
                 CurrentTarget = ChordTargets[0];
             else
                 CurrentTarget = null;
+            //
+            NotesQty = ChordTargets.Count(o => o.EventType == EChordEventType.Pressed);
+            BadEvents = 0;
+            GoodEvents = 0;
+            //
+            foreach (TChordTarget ct in ChordTargets) ct.Done = false;
         }
 
         TProfil CurrentProfil;
@@ -380,13 +483,13 @@ namespace PianoGalon
 
         private void pbMusicScore_Click(object sender, EventArgs e)
         {
-            TChordTarget ct = ChordTargets.First(o => !o.Done);
+            //TChordTarget ct = ChordTargets.First(o => !o.Done);
 
-            if (ct != null)
-            {
-                ct.Done = true;
-                CurrentTarget = ChordTargets.First(o => !o.Done);
-            }
+            //if (ct != null)
+            //{
+            //    ct.Done = true;
+            //    CurrentTarget = ChordTargets.First(o => !o.Done);
+            //}
         }
 
         private void btnMinimize_Click(object sender, EventArgs e)
@@ -396,9 +499,55 @@ namespace PianoGalon
 
         private void btnClose_Click(object sender, EventArgs e)
         {
-            this.Close ();
+            this.Close();
         }
+
+        private void newToolStripMenuItem1_Click(object sender, EventArgs e)
+        {
+            TExercices exs = new TExercices();
+            FProfil f = new FProfil(exs);
+            f.ShowDialog();
+            //
+            Array.Resize(ref TLecons.Exercices, TLecons.Exercices.Length + 1);
+            TLecons.Exercices[TLecons.Exercices.Length - 1] = exs;
+            //
+            UpdateLecons();
+        }
+
+        private void newToolStripMenuItem2_Click(object sender, EventArgs e)
+        {
+            TExercice ex = new TExercice();
+            FProfil f = new FProfil(ex);
+            f.ShowDialog();
+            //
+            CurrentExercices.Exercices.Add(ex);
+            //
+            UpdateExercices();
+        }
+
+        public Rectangle RecPlayMode;
+
+        public EPlayMode PlayMode = EPlayMode.Stairs;
+
+        private void pbMusicScore_MouseClick(object sender, MouseEventArgs e)
+        {
+            if (RecPlayMode.Contains(e.X, e.Y))
+            {
+                PlayMode = Pms[(Array.IndexOf(Pms, PlayMode) + 1) % Pms.Length];
+            }
+            else if (RecPlay.Contains(e.X, e.Y))
+                ResetExercice();
+        }
+
+        EPlayMode[] Pms = (EPlayMode[])Enum.GetValues(typeof(EPlayMode));
+
     }
 
+
+    public enum EPlayMode
+    {
+        Stairs,
+        Escalators
+    }
 
 }

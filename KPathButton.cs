@@ -11,7 +11,7 @@ using System.Windows.Forms;
 
 namespace PianoGalon
 {
-    public partial class KImageButton : KButton
+    public partial class KPathButton : KButton
     {
         protected override void OnPaint(PaintEventArgs pevent)
         {
@@ -73,7 +73,7 @@ namespace PianoGalon
 
         GraphicsPath ImagePath;
 
-        public KImageButton()
+        public KPathButton()
         {
             InitializeComponent();
         }

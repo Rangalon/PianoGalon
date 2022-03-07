@@ -1,7 +1,7 @@
 ﻿
 namespace PianoGalon
 {
-    partial class KImageButton
+    partial class KPathButton
     {
         /// <summary> 
         /// Required designer variable.

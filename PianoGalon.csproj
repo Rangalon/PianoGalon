@@ -85,11 +85,11 @@
     <Compile Include="KFlowLayoutPanel.Designer.cs">
       <DependentUpon>KFlowLayoutPanel.cs</DependentUpon>
     </Compile>
-    <Compile Include="KImageButton.cs">
+    <Compile Include="KPathButton.cs">
       <SubType>Component</SubType>
     </Compile>
-    <Compile Include="KImageButton.Designer.cs">
-      <DependentUpon>KImageButton.cs</DependentUpon>
+    <Compile Include="KPathButton.Designer.cs">
+      <DependentUpon>KPathButton.cs</DependentUpon>
     </Compile>
     <Compile Include="KLabel.cs">
       <SubType>Component</SubType>
@@ -155,6 +155,15 @@
       <Project>{5A2EF9A8-55BB-4069-AD1F-8489107F47B3}</Project>
       <Name>MidiGalon</Name>
     </ProjectReference>
+  </ItemGroup>
+  <ItemGroup>
+    <None Include="Escalators.png" />
+  </ItemGroup>
+  <ItemGroup>
+    <None Include="Stairs.png" />
+  </ItemGroup>
+  <ItemGroup>
+    <None Include="Play.png" />
   </ItemGroup>
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />
   <Import Project="..\packages\Melanchall.DryWetMidi.6.0.1\build\Melanchall.DryWetMidi.targets" Condition="Exists('..\packages\Melanchall.DryWetMidi.6.0.1\build\Melanchall.DryWetMidi.targets')" />
